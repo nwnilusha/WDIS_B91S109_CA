@@ -26,8 +26,6 @@ def create_app():
        if request.method == 'POST':
             username = request.form['username']
             password = request.form['password']
-            print(username)
-            print(password)
             db = get_db()
             cursor = db.cursor()
             cursor.execute('SELECT username, password, userRole FROM Users WHERE username = %s ', (username,))
@@ -38,6 +36,7 @@ def create_app():
 
             if user:
                 hashed_password = user[1]
+
                 if check_password_hash(hashed_password, password):
                     session['username'] = user[0]
                     session['userRole'] = user[2]
@@ -53,8 +52,9 @@ def create_app():
                 msg = 'Incorrect Username or Password'
                 return render_template('login.html', msg=msg)
        else:
-        return render_template('login.html')
-        # return redirect(url_for('login'))
+           return render_template('new_add.html')
+
+        
     
     
     @app.route('/signup', methods=['GET', 'POST'])
@@ -64,6 +64,19 @@ def create_app():
     @app.route('/home', methods=['GET', 'POST'])
     def home():
         return render_template('home.html')
+    
+    @app.route('/advertisement', methods=['GET', 'POST'])
+    def advertisement():
+        return render_template('new_add.html')
+    
+    @app.route('/new_advertisement', methods=['GET', 'POST'])
+    def new_advertisement():
+        return render_template('new_add.html')
+    
+    def convert_to_binary(filename):
+        with open(filename, 'rb') as file:
+            binary_data = file.read()
+        return binary_data
     
     def username_exists(username):
         db = get_db()
@@ -79,9 +92,13 @@ def create_app():
             username = request.form['create_username']
             password = request.form['create_password']
             email = request.form['create_email']
-            confirmPassword = request.form['create_confirm-password']
-            # role = request.form['user_role']
+            confirmPassword = request.form['create_confirm_password']
+
             role = "User"
+            print(username)
+            print(email)
+            print(password)
+            print(confirmPassword)
             
 
             if password != confirmPassword:
