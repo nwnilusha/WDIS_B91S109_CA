@@ -1,35 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup Page</title>
-    <link rel="stylesheet" href="static/home_styles.css">
-</head>
-<body>
-    <div class="login-container">
-        <div class="login-form">
-            <h2>Signup</h2>
-            <form action="/signup" method="post">
-                <div class="input-group">
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}List of devices{% endblock %}</h1>
+{% endblock %}
+
+{% block page_content_1 %}
+
+<!-- <link rel="stylesheet" href="static/home_styles.css"> -->
+
+<main>
+    <div class="signup_container">
+        <section class="signup-section">
+            <h2>Sign Up</h2>
+            <form action="{{ url_for('manageUsers') }}" method="post">
+                <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                    <input type="text" id="create_username" name="create_username" required>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <input type="email" id="create_email" name="create_email" required>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <input type="password" id="create_password" name="create_password" required>
                 </div>
-                <div class="input-group">
+                <div class="form-group">
                     <label for="confirm-password">Confirm Password</label>
-                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                    <input type="password" id="create_confirm-password" name="create_confirm-password" required>
                 </div>
-                <input type="submit" value="Signup">
+                <button type="submit">Sign Up</button>
+                <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+                {% if msg %}
+                <p style="color: red;">{{ msg }}</p>
+                {% endif %}
             </form>
-        </div>
+        </section>
     </div>
-</body>
-</html>
+</main>
+
+
+
+{% endblock %}

@@ -3,79 +3,153 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+    color: #333;
 }
-.navbar {
-    background-color: #232f3e;
+
+header {
+    background-color: #333;
     color: #fff;
-    padding: 1em;
+    padding: 20px 0;
+}
+
+header .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-.navbar a {
-    color: #fff;
-    margin: 0 1em;
-    text-decoration: none;
-}
-.navbar .logo {
-    font-size: 1.5em;
-    font-weight: bold;
-}
-.search-bar input {
-    width: 300px;
-    padding: 0.5em;
-}
-.container {
-    padding: 2em;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-.container1 {
-    width: 98%;
+header h1 {
+    margin: 0;
+}
+
+header nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+header nav ul li {
+    margin-left: 20px;
+}
+
+header nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+main .container {
+    max-width: 1200px;
     margin: 20px auto;
-    overflow: hidden;
-    display:flex;
+    padding: 0 20px;
 }
-.product {
+
+.ad-section {
+    margin-bottom: 40px;
+}
+
+.ad-section h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.ad {
     background-color: #fff;
-    border: 1px solid #ddd;
-    margin: 1em;
-    padding: 1em;
-    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
-    display: inline-block;
-    vertical-align: top;
-    width: 30%;
+    overflow: hidden;
 }
-.product img {
+
+.ad img {
     max-width: 100%;
     height: auto;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 1em;
-    margin-bottom: 1em;
+    display: block;
+    margin-bottom: 10px;
 }
-.product h3 {
+
+.ad h3 {
+    margin: 10px 0;
+}
+
+.ad p {
     margin: 0;
-    padding: 0.5em 0;
 }
-.product p {
-    margin: 0;
-    padding: 0.5em 0;
-    color: #666;
-}
-.product button {
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    padding: 0.5em 1em;
-    cursor: pointer;
-    border-radius: 5px;
-}
-.footer {
-    background-color: #232f3e;
+
+footer {
+    background-color: #333;
     color: #fff;
     text-align: center;
-    padding: 1em 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+    padding: 20px 0;
+    margin-top: 40px;
+}
+
+footer .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+
+
+
+
+main .signup_container {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+/* main .signup_container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+} */
+
+.signup-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 40px 0;
+}
+
+.signup-section h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #555;
 }
