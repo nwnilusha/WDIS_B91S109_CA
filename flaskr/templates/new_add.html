@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}List of devices{% endblock %}</h1>
+{% endblock %}
+
+{% block page_content_1 %}
+
+<link rel="stylesheet" href="static/new_add.css">
+
+<main class="insert-ad-container">
+    <section class="insert-ad-section">
+        <h2>Insert Advertisement</h2>
+        <form action="submit_ad_url" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="ad-title">Title</label>
+                <input type="text" id="ad-title" name="ad-title" placeholder="Enter the ad title" required>
+            </div>
+            <div class="form-group">
+                <label for="ad-description">Description</label>
+                <textarea id="ad-description" name="ad-description" placeholder="Enter the ad description"
+                    required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="ad-image">Image</label>
+                <input type="file" id="ad-image" name="ad-image" accept="image/*" onchange="displayImage(event)"
+                    required>
+                <img id="image-preview" class="image-preview" src="#" alt="Image Preview" style="display: none;">
+            </div>
+            <button type="submit">Submit Advertisement</button>
+        </form>
+    </section>
+</main>
+
+{% endblock %}
