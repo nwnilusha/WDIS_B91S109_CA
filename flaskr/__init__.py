@@ -4,6 +4,9 @@ from flask import Flask, redirect, session, render_template, request, url_for
 from .db import get_db
 from flask_bcrypt import Bcrypt
 from flask_bcrypt import check_password_hash
+from flask_mysqldb import MySQL
+import os
+from werkzeug.utils import secure_filename
 
 def generate_secret_key(length=32):
     alphabet = string.ascii_letters + string.digits + '!@#$%^&*()-=_+'
@@ -13,10 +16,16 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = generate_secret_key()
 
+   
+
     # app.config['MYSQL_HOST'] = 'localhost'
     # app.config['MYSQL_USER'] = 'dbs'
     # app.config['MYSQL_PASSWORD'] = 'password'
     # app.config['MYSQL_DB'] = 'WDIS'
+    app.config['UPLOAD_FOLDER'] = 'static/uploads'
+
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
 
     bcrypt = Bcrypt(app)
 
@@ -28,7 +37,7 @@ def create_app():
             password = request.form['password']
             db = get_db()
             cursor = db.cursor()
-            cursor.execute('SELECT username, password, userRole FROM Users WHERE username = %s ', (username,))
+            cursor.execute('SELECT username, password, userRole, userID FROM Users WHERE username = %s ', (username,))
             # SELECT username,password, userRole FROM Users WHERE username='admin';
             user = cursor.fetchone()
             cursor.close()
@@ -40,6 +49,7 @@ def create_app():
                 if check_password_hash(hashed_password, password):
                     session['username'] = user[0]
                     session['userRole'] = user[2]
+                    session['userID'] = user[3]
 
                     if session['userRole'] == 'admin':
                         return redirect(url_for('home'))
@@ -52,7 +62,7 @@ def create_app():
                 msg = 'Incorrect Username or Password'
                 return render_template('login.html', msg=msg)
        else:
-           return render_template('new_add.html')
+           return render_template('new_ad.html')
 
         
     
@@ -65,13 +75,9 @@ def create_app():
     def home():
         return render_template('home.html')
     
-    @app.route('/advertisement', methods=['GET', 'POST'])
-    def advertisement():
-        return render_template('new_add.html')
-    
     @app.route('/new_advertisement', methods=['GET', 'POST'])
     def new_advertisement():
-        return render_template('new_add.html')
+        return render_template('new_ad.html')
     
     def convert_to_binary(filename):
         with open(filename, 'rb') as file:
@@ -95,12 +101,7 @@ def create_app():
             confirmPassword = request.form['create_confirm_password']
 
             role = "User"
-            print(username)
-            print(email)
-            print(password)
-            print(confirmPassword)
-            
-
+    
             if password != confirmPassword:
                 error_msg = 'Passwords are not matching. Please re enter password.'
                 return render_template('signup.html', error_msg=error_msg)
@@ -114,10 +115,6 @@ def create_app():
                 return render_template('signup.html', error_msg=error_msg)
 
             hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-
-            print(username)
-            print(password)
-            print(confirmPassword)
 
             db = get_db()
             cursor = db.cursor()
@@ -135,7 +132,59 @@ def create_app():
         else:
             return render_template('signup.html')
         
+    @app.route('/submit_ad', methods=['POST'])
+    def submit_ad():
+        if request.method == 'POST':
+            title = request.form['ad-title']
+            description = request.form['ad-description']
+            category = request.form['ad-category']
+            # userId = session['userID']
+            userId = 1
+            
+            # Check if the post request has the file part
+            if 'ad-image' not in request.files:
+                return 'No file part'
+            
+            file = request.files['ad-image']
+            
+            # If the user does not select a file, the browser submits an empty file without a filename
+            if file.filename == '':
+                return 'No selected file'
+            
+            if file:
+                image_data = file.read()
+                
+                # Save ad information in the database
+                db = get_db()
+                cursor = db.cursor()
+                try:
+                    cursor.execute('INSERT INTO Advertisement (userID, addTitle, addInformation, caregory, image) VALUES (%s, %s, %s,%s, %s)', (userId, title, description, category, image_data))
+                    db.commit()
+                    msg = 'User registered successfully!'
+                    return render_template('new_ad.html', msg=msg)
+                except Exception as e:
+                    db.rollback()
+                    error_msg = f'Error inserting user: {e}'
+                    return render_template('new_ad.html', error_msg=error_msg)
+                finally:
+                    cursor.close()
+                
+            return render_template('new_ad.html', msg='No image selected')
         
+        return 'Error in form submission'
+
+    @app.route('/ad/<int:ad_id>')
+    def get_ad(ad_id):
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("SELECT title, description, image FROM advertisements WHERE id = %s", (ad_id,))
+        ad = cursor.fetchone()
+        cursor.close()
+        if ad:
+            title, description, image = ad
+            #return send_file(io.BytesIO(image), attachment_filename='image.jpg', mimetype='image/jpeg')
+        return 'Ad not found', 404
+
     return app
 
 if __name__ == "__main__":

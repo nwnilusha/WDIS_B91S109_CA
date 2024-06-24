@@ -42,9 +42,9 @@ header nav ul li a {
 }
 
 main .container {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 20px auto;
-    padding: 0 20px;
+    padding: 40px 20px;
 }
 
 .ad-section {
@@ -63,12 +63,13 @@ main .container {
 
 .new-add {
     background-color: #2867a2;
-    padding: 2px;
+    padding: 20px;
     border-radius: 5px;
     align-items: right;
     color: white;
     min-width: 150px;
     text-align: center;
+    font-size: medium;
 }
 
 .ad {
