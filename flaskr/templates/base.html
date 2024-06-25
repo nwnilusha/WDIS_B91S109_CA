@@ -7,15 +7,15 @@
         <link rel="stylesheet" href="static/styles.css">
         <script src="{{ url_for('static', filename='main.js') }}"></script>
     </head>
-<body onload = loadProductList()>
+<body>
     <header>
         <div class="container">
             <h1>Advertisement Hub</h1>
             <nav>
                 <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('about_us') }}">About</a></li>
+                    <li><a href="{{ url_for('contact_us') }}">Contact</a></li>
                     <li class="user-status">
                         <a href="#" id="userStatusDropdown" onclick="toggleDropdown()">User Status</a>
                         <div id="dropdownMenu" class="dropdown-content">

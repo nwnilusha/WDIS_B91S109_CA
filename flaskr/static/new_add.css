@@ -116,6 +116,18 @@ header nav ul li a {
     height: auto;
     margin-top: 10px;
 }
+/* Popup container */
+.popup {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    z-index: 1000;
+}
 
 button {
     padding: 10px 20px;

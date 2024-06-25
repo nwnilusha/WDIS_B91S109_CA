@@ -6,6 +6,8 @@
 
 {% block page_content_1 %}
 
+<script src="{{ url_for('static', filename='home.js') }}"></script>
+
 <main>
     <div class="container">
         <section class="ad-section">
@@ -14,26 +16,14 @@
                     <button class="new-add">+ New Advertisement</button>
                 </a>
             </div>
+            <div class="ad_container">
+                <h2>Featured Ads</h2>
+            </div>
             
-            <h2>Featured Ads</h2>
-            <div class="ad">
-                <img src="ad1.jpg" alt="Ad 1">
-                <h3>Ad Title 1</h3>
-                <p>Ad description goes here. This is a brief description of the advertisement.</p>
-            </div>
-            <div class="ad">
-                <img src="ad2.jpg" alt="Ad 2">
-                <h3>Ad Title 2</h3>
-                <p>Ad description goes here. This is a brief description of the advertisement.</p>
-            </div>
-            <div class="ad">
-                <img src="ad3.jpg" alt="Ad 3">
-                <h3>Ad Title 3</h3>
-                <p>Ad description goes here. This is a brief description of the advertisement.</p>
-            </div>
+            
         </section>
 
-        <section class="ad-section">
+        <!-- <section class="ad-section">
             <h2>Sponsored Ads</h2>
             <div class="ad">
                 <img src="ad4.jpg" alt="Ad 4">
@@ -45,7 +35,7 @@
                 <h3>Ad Title 5</h3>
                 <p>Ad description goes here. This is a brief description of the advertisement.</p>
             </div>
-        </section>
+        </section> -->
     </div>
 </main>
 

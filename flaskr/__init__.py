@@ -1,6 +1,7 @@
+import io
 import secrets
 import string
-from flask import Flask, redirect, session, render_template, request, url_for
+from flask import Flask, jsonify, redirect, send_file, session, render_template, request, url_for
 from .db import get_db
 from flask_bcrypt import Bcrypt
 from flask_bcrypt import check_password_hash
@@ -62,7 +63,7 @@ def create_app():
                 msg = 'Incorrect Username or Password'
                 return render_template('login.html', msg=msg)
        else:
-           return render_template('new_ad.html')
+           return render_template('home.html')
 
         
     
@@ -78,6 +79,14 @@ def create_app():
     @app.route('/new_advertisement', methods=['GET', 'POST'])
     def new_advertisement():
         return render_template('new_ad.html')
+    
+    @app.route('/about_us', methods=['GET', 'POST'])
+    def about_us():
+        return render_template('about_us.html')
+    
+    @app.route('/contact_us', methods=['GET', 'POST'])
+    def contact_us():
+        return render_template('contact_us.html')
     
     def convert_to_binary(filename):
         with open(filename, 'rb') as file:
@@ -131,7 +140,35 @@ def create_app():
                 cursor.close()
         else:
             return render_template('signup.html')
-        
+    
+
+    # Get all Ad list
+    @app.route('/get_ads')
+    def get_ads():
+        print('Inside get ads')
+        ad_data = fetch_all_ads()
+        Results = []
+        for row in ad_data:
+            Result = {
+                'UserId' : row[1],
+                'AdTitle': row[2],
+                'AdDescription': row[3],
+                'AdCategory': row[4],
+            }
+            Results.append(Result)
+        response = {'Results': Results, 'count': len(Results)}
+        return jsonify(response)  # Use jsonify to convert response to JSON
+    
+     # Fetch all data from Advertisement tables.
+    def fetch_all_ads():
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("SELECT  * FROM Advertisement")
+        data = cursor.fetchall()
+        cursor.close()
+
+        return data
+    
     @app.route('/submit_ad', methods=['POST'])
     def submit_ad():
         if request.method == 'POST':
@@ -140,50 +177,67 @@ def create_app():
             category = request.form['ad-category']
             # userId = session['userID']
             userId = 1
+
+            db = get_db()
+            cursor = db.cursor()
+            try:
+                cursor.execute('INSERT INTO Advertisement (userID, addTitle, addInformation, category) VALUES (%s, %s, %s,%s)', (userId, title, description, category))
+                db.commit()
+                return jsonify({"message": "New Ad completed successfully"}), 200
+            except Exception as e:
+                db.rollback()
+                return jsonify({"message": "New Ad unsuccessful"}), 500
+            finally:
+                cursor.close()
+    
+           
             
-            # Check if the post request has the file part
-            if 'ad-image' not in request.files:
-                return 'No file part'
+            # # Check if the post request has the file part
+            # if 'ad-image' not in request.files:
+            #     return 'No file part'
             
-            file = request.files['ad-image']
+            # file = request.files['ad-image']
             
-            # If the user does not select a file, the browser submits an empty file without a filename
-            if file.filename == '':
-                return 'No selected file'
+            # # If the user does not select a file, the browser submits an empty file without a filename
+            # if file.filename == '':
+            #     return 'No selected file'
             
-            if file:
-                image_data = file.read()
+            # if file:
+            #     image_data = file.read()
                 
-                # Save ad information in the database
-                db = get_db()
-                cursor = db.cursor()
-                try:
-                    cursor.execute('INSERT INTO Advertisement (userID, addTitle, addInformation, caregory, image) VALUES (%s, %s, %s,%s, %s)', (userId, title, description, category, image_data))
-                    db.commit()
-                    msg = 'User registered successfully!'
-                    return render_template('new_ad.html', msg=msg)
-                except Exception as e:
-                    db.rollback()
-                    error_msg = f'Error inserting user: {e}'
-                    return render_template('new_ad.html', error_msg=error_msg)
-                finally:
-                    cursor.close()
+            #     # Save ad information in the database
+            #     db = get_db()
+            #     cursor = db.cursor()
+            #     try:
+            #         cursor.execute('INSERT INTO Advertisement (userID, addTitle, addInformation, category, image) VALUES (%s, %s, %s,%s, %s)', (userId, title, description, category, image_data))
+            #         db.commit()
+            #         msg = 'User registered successfully!'
+            #         return render_template('new_ad.html', msg=msg)
+            #     except Exception as e:
+            #         db.rollback()
+            #         error_msg = f'Error inserting user: {e}'
+            #         return render_template('new_ad.html', error_msg=error_msg)
+            #     finally:
+            #         cursor.close()
                 
-            return render_template('new_ad.html', msg='No image selected')
+            # return render_template('new_ad.html', msg='No image selected')
         
         return 'Error in form submission'
 
-    @app.route('/ad/<int:ad_id>')
-    def get_ad(ad_id):
-        db = get_db()
-        cursor = db.cursor()
-        cursor.execute("SELECT title, description, image FROM advertisements WHERE id = %s", (ad_id,))
-        ad = cursor.fetchone()
-        cursor.close()
-        if ad:
-            title, description, image = ad
-            #return send_file(io.BytesIO(image), attachment_filename='image.jpg', mimetype='image/jpeg')
-        return 'Ad not found', 404
+    
+    # @app.route('/ad/<int:ad_id>/image')
+    # def get_ad_image(ad_id):
+    #     print('Inside get image')
+    #     db = get_db()
+    #     cursor = db.cursor()
+    #     cursor.execute("SELECT image FROM advertisements WHERE id = %s", (ad_id,))
+    #     ad = cursor.fetchone()
+    #     cursor.close()
+    #     if ad:
+    #         image = ad[0]
+    #         return send_file(io.BytesIO(image), attachment_filename='image.png', mimetype='image/png')
+    #     return 'Ad image not found', 404
+ 
 
     return app
 
