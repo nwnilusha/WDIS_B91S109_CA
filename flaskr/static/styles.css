@@ -41,8 +41,9 @@ header nav ul li a {
     text-decoration: none;
 }
 
-main .container {
-    max-width: 1000px;
+main .home_container {
+    width:50%;
+    max-width: 750px;
     margin: 20px auto;
     padding: 40px 20px;
 }
@@ -88,8 +89,27 @@ main .container {
     margin-bottom: 10px;
 }
 
-.ad h3 {
-    margin: 10px 0;
+.ad h2 {
+    margin: 5px 0;
+}
+
+.adPrice{
+    font-family: sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: hsla(355, 89%, 41%, 0.918);
+}
+
+.adContact{
+    font-family: sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.adEmail{
+    font-family: sans-serif;
+    font-weight: 500;
+    font-size: 16px;
 }
 
 .ad p {

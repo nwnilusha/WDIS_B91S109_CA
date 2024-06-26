@@ -9,12 +9,13 @@
 <script src="{{ url_for('static', filename='home.js') }}"></script>
 
 <main>
-    <div class="container">
+    <div class="home_container">
         <section class="ad-section">
             <div class="new-add-row">
-                <a href="{{ url_for('new_advertisement') }}">
+                <!-- <a href="{{ url_for('new_advertisement') }}">
                     <button class="new-add">+ New Advertisement</button>
-                </a>
+                </a> -->
+                <button class="new-add" id="newAdBtn">+ New Advertisement</button>
             </div>
             <div class="ad_container">
                 <h2>Featured Ads</h2>

@@ -78,7 +78,26 @@ def create_app():
     
     @app.route('/new_advertisement', methods=['GET', 'POST'])
     def new_advertisement():
-        return render_template('new_ad.html')
+        print("Inside new Advertisement Nilusha")
+        # return render_template('new_ad.html')
+        data = ''
+        if request.method == 'POST':
+            data = request.json
+            ad_id = data.get('adId')
+            return jsonify({'message': 'Received', 'adId': ad_id})
+
+        # If it's a GET request, render the template with the ad_id from query parameters
+        ad_id = request.args.get('adId', 'Default Title')
+        return render_template('new_ad.html', adDataUpdate=ad_id)
+        #return render_template('new_ad.html', adDataUpdate=data)
+        
+    # @app.route('/new_advertisement/<string:ad_number>', methods=['POST'])
+    # def new_advertisement(ad_number):
+    #     print("Inside new Advertisement Nilusha")
+    #     if ad_number != 0:
+    #         return render_template('new_ad.html')
+    #     else:
+    #         return render_template('new_ad.html')
     
     @app.route('/about_us', methods=['GET', 'POST'])
     def about_us():
@@ -150,10 +169,14 @@ def create_app():
         Results = []
         for row in ad_data:
             Result = {
+                'AdId': row[0],
                 'UserId' : row[1],
                 'AdTitle': row[2],
-                'AdDescription': row[3],
-                'AdCategory': row[4],
+                'AdPrice': row[3],
+                'AdContact': row[4],
+                'AdEmail': row[5],
+                'AdDescription': row[6],
+                'AdCategory': row[7],
             }
             Results.append(Result)
         response = {'Results': Results, 'count': len(Results)}
@@ -173,6 +196,9 @@ def create_app():
     def submit_ad():
         if request.method == 'POST':
             title = request.form['ad-title']
+            price = request.form['ad-price']
+            contact = request.form['ad-contact']
+            email = request.form['ad-email']
             description = request.form['ad-description']
             category = request.form['ad-category']
             # userId = session['userID']
@@ -181,7 +207,7 @@ def create_app():
             db = get_db()
             cursor = db.cursor()
             try:
-                cursor.execute('INSERT INTO Advertisement (userID, addTitle, addInformation, category) VALUES (%s, %s, %s,%s)', (userId, title, description, category))
+                cursor.execute('INSERT INTO Advertisement (userID, addTitle, addPrice, addContact, addEmail, addInformation, category) VALUES (%s, %s, %s,%s, %s, %s,%s)', (userId, title,price,contact,email, description, category))
                 db.commit()
                 return jsonify({"message": "New Ad completed successfully"}), 200
             except Exception as e:

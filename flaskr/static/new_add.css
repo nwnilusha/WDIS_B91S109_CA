@@ -73,7 +73,8 @@ header nav ul li a {
 }
 
 .insert-ad-container {
-    max-width: 1000px;
+    width:50%;
+    max-width: 750px;
     margin: 20px auto;
     padding: 0 20px;
 }
@@ -101,6 +102,11 @@ header nav ul li a {
     display: block;
     margin-bottom: 5px;
 }
+
+.required:after {
+    content:" *";
+    color: red;
+  }
 
 .form-group input,
 .form-group textarea {

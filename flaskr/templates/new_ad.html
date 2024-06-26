@@ -14,22 +14,34 @@
         <h2>Insert Advertisement</h2>
         <form id="newAdForm" action="{{ url_for('submit_ad') }}" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="ad-title">Title</label>
+                <label class="required" for="ad-title">Title</label>
                 <input type="text" id="ad-title" name="ad-title" placeholder="Enter the ad title" required>
             </div>
             <div class="form-group">
-                <label for="ad-description">Description</label>
-                <textarea id="ad-description" name="ad-description" placeholder="Enter the ad description"
-                    required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="ad-category">Ad Category</label>
+                <label class="required" for="ad-category">Ad Category</label>
                 <select id="ad-category" name="ad-category" required>
                     <option value="House">House</option>
                     <option value="Vehicle">Vehicle</option>
                     <option value="Land">Land</option>
                     <option value="Pther">Other</option>
                 </select>
+            </div>
+            <div class="form-group">
+                <label class="required" for="ad-price">Item Price</label>
+                <input type="number" id="ad-price" name="ad-price" placeholder="Enter the item price" required>
+            </div>
+            <div class="form-group">
+                <label class="required" for="ad-contact">Contact Number</label>
+                <input type="tel" id="ad-contact" name="ad-contact" placeholder="Enter the contact number" required>
+            </div>
+            <div class="form-group">
+                <label class="required" for="ad-email">Email Address</label>
+                <input type="email" id="ad-email" name="ad-email" placeholder="Enter the email address" required>
+            </div>
+            <div class="form-group">
+                <label class="required" for="ad-description">Description</label>
+                <textarea id="ad-description" name="ad-description" placeholder="Enter the ad description"
+                    required></textarea>
             </div>
             <!-- <div class="form-group">
                 <label for="ad-image">Image</label>
@@ -44,5 +56,11 @@
         <span id="messageText"></span>
     </div>
 </main>
+<script type="text/javascript">
+    var test = "{{adDataUpdate}}";
+    console.log(test);
+
+</script>
+
 
 {% endblock %}
