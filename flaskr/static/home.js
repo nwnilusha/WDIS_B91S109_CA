@@ -1,8 +1,3 @@
-// Function to handle form submission
-document.addEventListener('DOMContentLoaded', function() {
-    loadAdList()
-})
-
 //function loadAdList
 function loadAdList() {
     fetch('/get_ads')
@@ -27,29 +22,15 @@ function loadAdList() {
                 document.getElementById(x['AdId']).addEventListener('click', function() {
                     console.log('Click add :' + x['AdId']);
                     const adId = x['AdId'];
-        
-                    fetch('/new_advertisement', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ adId: adId }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Success:', data);
-                        // Navigate to the new page
-                        window.location.href = `/new_advertisement?adId=${adId}`;
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
+
+                    window.location.href = `/new_advertisement?adId=${adId}`;
                 });
             });
         })
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    loadAdList()
     // Event listener for the "Create New Ad" button
     document.getElementById('newAdBtn').addEventListener('click', function() {
         console.log("Inside button click event handler")
