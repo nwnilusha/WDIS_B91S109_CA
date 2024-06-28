@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}List of devices{% endblock %}</h1>
+  <h1>{% block title %}Advertisement Hub{% endblock %}</h1>
 {% endblock %}
 
 {% block page_content_1 %}
@@ -39,5 +39,11 @@
         </section> -->
     </div>
 </main>
+
+<script type="text/javascript">
+    var userData = {{ userData | tojson }};
+    console.log(userData.Username)
+
+</script>
 
 {% endblock %}

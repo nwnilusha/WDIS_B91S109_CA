@@ -1,7 +1,8 @@
 import io
+import re
 import secrets
 import string
-from flask import Flask, jsonify, redirect, send_file, session, render_template, request, url_for
+from flask import Flask, jsonify, logging, redirect, send_file, session, render_template, request, url_for
 from .db import get_db
 from flask_bcrypt import Bcrypt
 from flask_bcrypt import check_password_hash
@@ -17,12 +18,6 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = generate_secret_key()
 
-   
-
-    # app.config['MYSQL_HOST'] = 'localhost'
-    # app.config['MYSQL_USER'] = 'dbs'
-    # app.config['MYSQL_PASSWORD'] = 'password'
-    # app.config['MYSQL_DB'] = 'WDIS'
     app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
@@ -31,7 +26,11 @@ def create_app():
     bcrypt = Bcrypt(app)
 
     @app.route('/', methods=['GET', 'POST'])
-    def login():
+    def appInit():
+       return render_template('login.html')
+
+    @app.route('/login_app', methods=['GET', 'POST'])
+    def login_app():
        print("Inside login module")
        if request.method == 'POST':
             username = request.form['username']
@@ -53,20 +52,21 @@ def create_app():
                     session['userID'] = user[3]
 
                     if session['userRole'] == 'admin':
-                        return redirect(url_for('home'))
+                         return jsonify({"user": user[0], "message": "Success"}), 200
                     else:
-                        return redirect(url_for('home'))
+                         return jsonify({"user": user[0], "message": "Success"}), 200
                 else:
-                    msg = 'Incorrect Username or Password'
-                    return render_template('login.html', msg=msg)
+                    return jsonify({"user": "nil", "message": "Incorrect Username or Password"}), 500
             else:
-                msg = 'Incorrect Username or Password'
-                return render_template('login.html', msg=msg)
+                return jsonify({"user": "nil", "message": "Incorrect Username or Password"}), 500
        else:
-           return render_template('home.html')
-
-        
+        #    return render_template('test.html')
+        return jsonify({"user": "nil", "message": "Login unsuccessful"}), 500
     
+    @app.route('/logout')
+    def logout():
+        session.clear()
+        return render_template('login.html')
     
     @app.route('/signup', methods=['GET', 'POST'])
     def signup():
@@ -74,30 +74,53 @@ def create_app():
     
     @app.route('/home', methods=['GET', 'POST'])
     def home():
-        return render_template('home.html')
+        if 'username' in session:
+            username = session['username']
+            userDetails = {
+                    'Username': username,
+                }
+            return render_template('home.html', userData=userDetails)
+        else:
+            return render_template('login.html')
     
     @app.route('/new_advertisement', methods=['GET', 'POST'])
     def new_advertisement():
-        print("Inside new Advertisement Nilusha")
-        # return render_template('new_ad.html')
-        data = ''
-        if request.method == 'POST':
-            data = request.json
-            ad_id = data.get('adId')
-            return jsonify({'message': 'Received', 'adId': ad_id})
-
-        # If it's a GET request, render the template with the ad_id from query parameters
-        ad_id = request.args.get('adId', 'Default Title')
-        return render_template('new_ad.html', adDataUpdate=ad_id)
-        #return render_template('new_ad.html', adDataUpdate=data)
+        if 'username' in session:
+            username = session['username']
         
-    # @app.route('/new_advertisement/<string:ad_number>', methods=['POST'])
-    # def new_advertisement(ad_number):
-    #     print("Inside new Advertisement Nilusha")
-    #     if ad_number != 0:
-    #         return render_template('new_ad.html')
-    #     else:
-    #         return render_template('new_ad.html')
+            ad_id = request.args.get('adId')
+
+            if ad_id != None:
+                print(ad_id)
+                db = get_db()
+                cursor = db.cursor()
+                cursor.execute("SELECT  * FROM Advertisement WHERE addID=%s",(ad_id,))
+                data = cursor.fetchall()
+                result = data[0]
+                Results = {
+                        'AdId': result[0],
+                        'UserId' : result[1],
+                        'AdTitle': result[2],
+                        'AdPrice': result[3],
+                        'AdContact': result[4],
+                        'AdEmail': result[5],
+                        'AdDescription': result[6],
+                        'AdCategory': result[7],
+                        'Username': username,
+                    }
+                cursor.close()
+                
+                return render_template('new_ad.html', adDataUpdate=Results)
+            else:
+                Results = {
+                        'AdId': 0,
+                    }
+                return render_template('new_ad.html', adDataUpdate=Results)
+        else:
+            # Redirect to login if username not found in session
+            return redirect(url_for('login'))
+
+        
     
     @app.route('/about_us', methods=['GET', 'POST'])
     def about_us():
@@ -120,27 +143,43 @@ def create_app():
         cursor.close()
         return record is not None
     
-    @app.route('/users', methods=['GET', 'POST'])
+    def is_valid_email(email):
+        email_regex = r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
+
+        if re.match(email_regex, email):
+            return True
+        else:
+            return False
+    
+    @app.route('/manage_users', methods=['GET', 'POST'])
     def manageUsers():
         if request.method == 'POST':
             username = request.form['create_username']
             password = request.form['create_password']
             email = request.form['create_email']
             confirmPassword = request.form['create_confirm_password']
-
             role = "User"
-    
-            if password != confirmPassword:
-                error_msg = 'Passwords are not matching. Please re enter password.'
-                return render_template('signup.html', error_msg=error_msg)
 
+            print(username)
+            print(password)
+            print(email)
+            print(confirmPassword)
+    
             if username_exists(username):
                 error_msg = 'Username already exists. Please use another Username.'
-                return render_template('signup.html', error_msg=error_msg)
+                return jsonify({"message": error_msg, "status":False}), 500
+            
+            # if is_valid_email(email):
+            #     error_msg = 'Email is not correct format. Please enter correct email.'
+            #     return jsonify({"message": error_msg}), 500
 
-            if len(password) < 4:
+            if (len(password) < 4):
                 error_msg = 'Password must be atleast 4 characters'
-                return render_template('signup.html', error_msg=error_msg)
+                return jsonify({"message": error_msg, "status":False}), 500
+            
+            if (password != confirmPassword):
+                error_msg = 'Passwords are not matching. Please re enter password.'
+                return jsonify({"message": error_msg, "status":False}), 500
 
             hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
@@ -149,12 +188,13 @@ def create_app():
             try:
                 cursor.execute('INSERT INTO Users (username, password, email, userRole) VALUES (%s, %s, %s, %s)', (username, hashed_password, email, role))
                 db.commit()
-                msg = 'User registered successfully!'
-                return render_template('signup.html', msg=msg)
+                msg = username + ' - registered successfully!'
+                # return render_template('signin.html', msg=msg)
+                return jsonify({"message": msg, "status":True}), 200
             except Exception as e:
                 db.rollback()
                 error_msg = f'Error inserting user: {e}'
-                return render_template('signup.html', error_msg=error_msg, username=username, password=password)
+                return jsonify({"message": error_msg, "status":False}), 500
             finally:
                 cursor.close()
         else:
@@ -192,6 +232,36 @@ def create_app():
 
         return data
     
+    @app.route('/get_ad', methods=['POST'])
+    def get_ad():
+        ad_id = request.args.get('adId')
+        print('Inside get ad API')
+        print(ad_id)
+        db = get_db()
+        cursor = db.cursor()
+        try:
+            cursor.execute("SELECT  * FROM Advertisement WHERE addID=%s",(ad_id))
+            data = cursor.fetchall()
+            Results = {
+                'AdId': data[0],
+                'UserId' : data[1],
+                'AdTitle': data[2],
+                'AdPrice': data[3],
+                'AdContact': data[4],
+                'AdEmail': data[5],
+                'AdDescription': data[6],
+                'AdCategory': data[7],
+            }
+
+            response = {'Results': Results}
+            return jsonify(response)
+        except Exception as e:
+            db.rollback()
+            return jsonify({"message": "New Ad unsuccessful"}), 500
+        finally:
+            cursor.close()
+
+
     @app.route('/submit_ad', methods=['POST'])
     def submit_ad():
         if request.method == 'POST':
@@ -250,20 +320,54 @@ def create_app():
         
         return 'Error in form submission'
 
+    # Update device data in Device and CompanyManufacturedDevice tables.
+    @app.route('/update_ad/<string:ad_id>', methods=['POST'])
+    def update_ad(ad_id):
+        try:
+            if request.method == 'POST':
+                title = request.form['ad-title']
+                price = request.form['ad-price']
+                contact = request.form['ad-contact']
+                email = request.form['ad-email']
+                description = request.form['ad-description']
+                category = request.form['ad-category']
+                # userId = session['userID']
+                userId = 1
+                print(title);
+                print(price);
+                print(contact);
+                print(email);
+                print(description);
+
+                db = get_db()
+                cursor = db.cursor()
+                try:
+                    cursor.execute('UPDATE Advertisement SET addTitle = %s, addPrice = %s, addContact = %s, addEmail = %s, addInformation = %s, category = %s WHERE addID = %s', (title,price,contact,email, description,category, ad_id))
+                    db.commit()
+                    return jsonify({"message": "Update Ad details successfully"}), 200
+                except Exception as e:
+                    db.rollback()
+                    return jsonify({"message": "Update Ad details unsuccessful"}), 500
+                finally:
+                    cursor.close()
+
+            return jsonify({"message": "Update Ad details unsuccessful"}), 200
+        except Exception as e:
+            logging.error(f"Failed to update Ad details: {str(e)}")
+            return jsonify({"error": "Failed to update Ad details", "details": str(e)}), 500
     
-    # @app.route('/ad/<int:ad_id>/image')
-    # def get_ad_image(ad_id):
-    #     print('Inside get image')
-    #     db = get_db()
-    #     cursor = db.cursor()
-    #     cursor.execute("SELECT image FROM advertisements WHERE id = %s", (ad_id,))
-    #     ad = cursor.fetchone()
-    #     cursor.close()
-    #     if ad:
-    #         image = ad[0]
-    #         return send_file(io.BytesIO(image), attachment_filename='image.png', mimetype='image/png')
-    #     return 'Ad image not found', 404
- 
+    # Delete Ad from Device and CompanyManufacturedDevice tables.
+    @app.route('/delete_ad/<string:ad_id>', methods=['DELETE'])
+    def delete_add(ad_id): 
+        print('Inside delete Ad')
+        try:
+            db = get_db()
+            cursor = db.cursor()
+            cursor.execute("DELETE FROM Advertisement WHERE addID = %s", (ad_id,))
+            cursor.close()  # Close the cursor after use
+            return jsonify({"message": "Ad deleted successfully"}), 200
+        except Exception as e:
+            return jsonify({"error": "Failed to delete Ad", "details": str(e)}), 500
 
     return app
 

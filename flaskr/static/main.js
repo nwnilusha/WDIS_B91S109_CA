@@ -1,6 +1,5 @@
 function toggleDropdown() {
-    var dropdownMenu = document.getElementById("dropdownMenu");
-    dropdownMenu.classList.toggle("show");
+    document.querySelector('.user-status').classList.toggle('show');
 }
 
 window.onclick = function(event) {
@@ -21,19 +20,70 @@ function displayImage(event) {
     image.style.display = 'block';
 }
 
-//function loadAdList
-function loadAdList() {
-    fetch('/get_ads')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            data.Results.forEach(x => {
-                console.log('Inside load ad list nilusha')
-                console.log(x)
-                var ad_element = '<div class="ad"><h3>"'+x['AdTitle']+'"</h3><p>"'+x['AdDescription']+'"</p></div>';
-                // document.querySelector(`.ad-section`).innerHTML = document.querySelector(`.ad-section`).innerHTML + ad_element
-                document.querySelector(`.ad-section`).querySelector(`.ad_container`).innerHTML = document.querySelector(`.ad-section`).querySelector(`.ad_container`).innerHTML + ad_element
+document.addEventListener('DOMContentLoaded', function() {
+
+    document.getElementById('user_status_login').style.display = 'none';
+
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        var formData = new FormData(this);
+
+        fetch('/login_app', {
+            method: 'POST',
+            body: formData
             })
-        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.user != "nil") {
+                    console.log('Login success')
+                    window.location.href = `/home`;
+                } else {
+                    console.log('Login un-success')
+                    showConfirmModal(data.message)
+                }
+                
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                console.log('Login un-success');
+                showConfirmModal(error)
+        });
+    })
+})
+
+function updateLoginUI(user) {
+
+    console.log('inside updateLoginUI')
+
+    document.getElementById('user_status_login').style.display = 'block';
+    document.getElementById('user_status_logout').style.display = 'none';
+    document.getElementById("usernale_label").textContent = '@'+user;
 }
 
+function showConfirmModal(errorDiscription) {
+
+    document.getElementById("modelDetails").textContent = errorDiscription;
+
+    const modal = document.getElementById("confirmationModal");
+    modal.style.display = "block";
+
+    const confirmYes = document.getElementById("confirmYes");
+
+    confirmYes.onclick = null;
+
+    confirmYes.addEventListener('click', function() {
+        modal.style.display = "none";
+    });
+
+    const closeBtn = document.getElementsByClassName("close")[0];
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+}

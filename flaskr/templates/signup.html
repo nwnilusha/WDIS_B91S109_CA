@@ -1,19 +1,28 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}List of devices{% endblock %}</h1>
+<h1>{% block title %}Signup User{% endblock %}</h1>
 {% endblock %}
 
 {% block page_content_1 %}
 
-<!-- <link rel="stylesheet" href="static/home_styles.css"> -->
+<script src="{{ url_for('static', filename='signup.js') }}"></script>
+
+<div id="confirmationModal" class="confirm_modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalHeading">Signup Error</h2>
+        <p id="modelDetails">Username or Password incorrect</p>
+        <button id="confirmYes">OK</button>
+    </div>
+  </div>
 
 <main>
     <div class="signup_container">
         <section class="signup-section">
             <img src="./static/images/post-free-ads.jpg" alt="Signup Image" class="signup-image">
             <h2>Sign Up</h2>
-            <form action="{{ url_for('manageUsers') }}" method="post">
+            <form id="manageUserForm" action="{{ url_for('manageUsers') }}" method="post">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <div class="input-container">
@@ -43,9 +52,9 @@
                     </div>     
                 </div>
                 <button type="submit">Sign Up</button>
-                <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+                <p>Already have an account? <a href="{{ url_for('login_app') }}">Login</a></p>
                 {% if msg %}
-                <p style="color: red;">{{ msg }}</p>
+                <p style="color: green;">{{ msg }}</p>
                 {% endif %}
             </form>
         </section>

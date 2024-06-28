@@ -1,13 +1,23 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}List of devices{% endblock %}</h1>
+<h1>{% block title %}New Advertisement{% endblock %}</h1>
 {% endblock %}
 
 {% block page_content_1 %}
 
 <link rel="stylesheet" href="static/new_add.css">
 <script src="{{ url_for('static', filename='new_ad.js') }}"></script>
+
+<div id="confirmationModal" class="confirm_modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalHeading">Delete Advertisement</h2>
+        <p id="modelDetails">Are you sure you want to delete this Ad?</p>
+        <button id="confirmYes">Yes</button>
+        <button id="confirmNo">No</button>
+    </div>
+</div>
 
 <main class="insert-ad-container">
     <section class="insert-ad-section">

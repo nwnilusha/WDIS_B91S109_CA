@@ -8,6 +8,10 @@ function updateDetails() {
 // Function to handle form submission
 document.addEventListener('DOMContentLoaded', function() {
     
+    document.getElementById('user_status_login').style.display = 'block';
+    document.getElementById('user_status_logout').style.display = 'none';
+    document.getElementById("usernale_label").textContent = '@'+adData.Username;
+
     if (adData.AdId != 0) {
         document.getElementById('ad-title').value = adData.AdTitle;
         document.getElementById('ad-category').value = adData.AdCategory;
@@ -45,22 +49,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error('Error:', error);
             });
         } else {
-            const userConfirmed = confirm('Are you sure you want to update this Ad?');
 
-            if (userConfirmed) {
-                fetch(`/update_ad/${adData.AdId}`, {
-                    method: 'POST',
-                    body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        showMessage(data.message);
-                        clearForm()
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                });
-            }
+            showConfirmModal('Update Advertisement','Are you sure you want to update this Ad?','update',formData);
+            
         }
 
     });
@@ -76,32 +67,100 @@ function clearForm() {
 
 function deleteDetails() {
     console.log('Inside delete Ad')
-    const userConfirmed = confirm('Are you sure you want to delete this Ad?');
-
-    if (userConfirmed) {
-        fetch(`/delete_ad/${adData.AdId}`, {
-            method: 'DELETE',
-            })
-            .then(response => {
-                if (!response.ok) {
-                  // Delete failed
-                  response.json().then(data => {
-                        showMessage(`Failed to delete device: ${data.error}`);
-                    });
-                }
-                else {
-                  // Delete successful
-                  showMessage('Device deleted successfully');
-                  clearTable()
-                  GetAllHomeDevices()
-                }
-                
-              })
-              .catch(error => console.error('Error:', error)
-            );
-    }
+    showConfirmModal('Delete Advertisement','Are you sure you want to delete this Ad?','delete','nil')
     
 }
+
+function confirmDelete() {
+
+    fetch(`/delete_ad/${adData.AdId}`, {
+        method: 'DELETE',
+        })
+        .then(response => response.json())
+        .then(data => {
+            showMessage(data.message);
+            clearForm()
+        })
+        .catch(error => {
+            console.error('Error:', error);
+    });
+
+    // fetch(`/delete_ad/${adData.AdId}`, {
+    //     method: 'DELETE',
+    //     })
+    //     .then(response => {
+    //         if (!response.ok) {
+    //           // Delete failed
+    //           response.json().then(data => {
+    //                 showMessage(`Failed to delete device: ${data.error}`);
+    //             });
+    //         }
+    //         else {
+    //           // Delete successful
+    //           showMessage('Device deleted successfully');
+    //         }
+            
+    //       })
+    //       .catch(error => console.error('Error:', error)
+    //     );
+}
+
+function confirmUpdate(formData) {
+
+    fetch(`/update_ad/${adData.AdId}`, {
+        method: 'POST',
+        body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            showMessage(data.message);
+            clearForm()
+        })
+        .catch(error => {
+            console.error('Error:', error);
+    });
+}
+
+function showConfirmModal(modelTitle, modelDiscription,modelType,formData) {
+
+    document.getElementById("modalHeading").textContent = modelTitle;
+    document.getElementById("modelDetails").textContent = modelDiscription;
+
+    const modal = document.getElementById("confirmationModal");
+    modal.style.display = "block";
+
+    const confirmYes = document.getElementById("confirmYes");
+    const confirmNo = document.getElementById("confirmNo");
+
+    confirmYes.onclick = null;
+    confirmNo.onclick = null;
+
+    confirmYes.addEventListener('click', function() {
+        modal.style.display = "none";
+        if (modelType == 'delete') {
+            confirmDelete()
+        } else {
+            console.log("Confirm to update advertisement")
+            confirmUpdate(formData)
+        }
+    });
+
+    confirmNo.addEventListener('click', function() {
+        modal.style.display = "none";
+    });
+
+    const closeBtn = document.getElementsByClassName("close")[0];
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+}
+
 
 
 // Function to show popup message
