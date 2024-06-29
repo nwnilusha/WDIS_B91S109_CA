@@ -76,8 +76,10 @@ def create_app():
     def home():
         if 'username' in session:
             username = session['username']
+            userrole = session['userRole']
             userDetails = {
                     'Username': username,
+                    'UserRole': userrole,
                 }
             return render_template('home.html', userData=userDetails)
         else:

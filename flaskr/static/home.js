@@ -18,14 +18,17 @@ function loadAdList() {
             });
 
             // Add event listeners after elements are added to the DOM
-            data.Results.forEach(x => {
-                document.getElementById(x['AdId']).addEventListener('click', function() {
-                    console.log('Click add :' + x['AdId']);
-                    const adId = x['AdId'];
-
-                    window.location.href = `/new_advertisement?adId=${adId}`;
+            if (userData.UserRole == 'Admin') {
+                data.Results.forEach(x => {
+                    document.getElementById(x['AdId']).addEventListener('click', function() {
+                        console.log('Click add :' + x['AdId']);
+                        const adId = x['AdId'];
+    
+                        window.location.href = `/new_advertisement?adId=${adId}`;
+                    });
                 });
-            });
+            }
+            
         })
 }
 

@@ -159,6 +159,21 @@ function showConfirmModal(modelTitle, modelDiscription,modelType,formData) {
             modal.style.display = "none";
         }
     };
+
+  const adPrice = document.getElementById('ad-price');
+  const adContact = document.getElementById('ad-contact');
+
+  adPrice.addEventListener('input', function(event) {
+      let value = event.target.value;
+      value = value.replace(/\D/g, '');
+      event.target.value = value;
+  });
+
+  adContact.addEventListener('input', function(event) {
+    let value = event.target.value;
+    value = value.replace(/\D/g, '');
+    event.target.value = value;
+  });
 }
 
 
@@ -174,3 +189,4 @@ function showMessage(message) {
         popup.style.display = 'none';
     }, 3000);
 }
+
