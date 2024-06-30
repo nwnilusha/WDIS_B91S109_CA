@@ -429,9 +429,9 @@ def create_app():
             cursor = db.cursor()
             cursor.execute("DELETE FROM Advertisement WHERE addID = %s", (ad_id,))
             cursor.close()  
-            return jsonify({"message": "Ad deleted successfully"}), 200
+            return jsonify({"title":"Delete Ad","message": "Delete advertisement successful","status":True}), 200
         except Exception as e:
-            return jsonify({"error": "Failed to delete Ad", "details": str(e)}), 500
+            return jsonify({"title":"Delete Ad","message": "Delete advertisement Unsuccessful","status":True}), 500
     
     @app.route('/get_ad_image', methods=['POST'])
     def get_ad_image():

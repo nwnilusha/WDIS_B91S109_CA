@@ -4,8 +4,6 @@ function updateDetails() {
     document.getElementById('ad-price').value = adDetails;
 }
 
-
-// Function to handle form submission
 document.addEventListener('DOMContentLoaded', function() {
     
     document.getElementById('user_status_login').style.display = 'block';
@@ -93,31 +91,12 @@ function confirmDelete() {
         })
         .then(response => response.json())
         .then(data => {
-            showMessage(data.message);
+            showErrorModal(data.title,data.message,data.status)
             clearForm()
         })
         .catch(error => {
             console.error('Error:', error);
     });
-
-    // fetch(`/delete_ad/${adData.AdId}`, {
-    //     method: 'DELETE',
-    //     })
-    //     .then(response => {
-    //         if (!response.ok) {
-    //           // Delete failed
-    //           response.json().then(data => {
-    //                 showMessage(`Failed to delete device: ${data.error}`);
-    //             });
-    //         }
-    //         else {
-    //           // Delete successful
-    //           showMessage('Device deleted successfully');
-    //         }
-            
-    //       })
-    //       .catch(error => console.error('Error:', error)
-    //     );
 }
 
 function confirmUpdate(formData) {
