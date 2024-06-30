@@ -1,4 +1,5 @@
 import base64
+from datetime import datetime
 import io
 from mailbox import Message, Mailbox
 import mailbox
@@ -110,12 +111,13 @@ def create_app():
                 Results = {
                         'AdId': result[0],
                         'UserId' : result[1],
-                        'AdTitle': result[2],
-                        'AdPrice': result[3],
-                        'AdContact': result[4],
-                        'AdEmail': result[5],
-                        'AdDescription': result[6],
-                        'AdCategory': result[7],
+                        'AdTitle': result[3],
+                        'AdPrice': result[5],
+                        'AdContact': result[6],
+                        'AdEmail': result[7],
+                        'AdSpecification': result[8],
+                        'AdDescription': result[9],
+                        'AdCategory': result[10],
                         'Username': username,
                     }
                 cursor.close()
@@ -255,16 +257,19 @@ def create_app():
         print(ad_cat)
         ad_data = fetch_all_ads(ad_cat)
         Results = []
-        for row in ad_data:
+        for data in ad_data:
             Result = {
-                'AdId': row[0],
-                'UserId' : row[1],
-                'AdTitle': row[2],
-                'AdPrice': row[3],
-                'AdContact': row[4],
-                'AdEmail': row[5],
-                'AdDescription': row[6],
-                'AdCategory': row[7],
+                'AdId': data[0],
+                'UserId' : data[1],
+                'UserName' : data[2],
+                'AdTitle': data[3],
+                'AdDate' : data[4].strftime('%Y-%m-%d'),
+                'AdPrice': data[5],
+                'AdContact': data[6],
+                'AdEmail': data[7],
+                'AdSpecification' : data[8],
+                'AdDescription': data[9],
+                'AdCategory': data[10],
             }
             Results.append(Result)
         response = {'Results': Results, 'count': len(Results)}
@@ -300,12 +305,15 @@ def create_app():
             Results = {
                 'AdId': data[0],
                 'UserId' : data[1],
-                'AdTitle': data[2],
-                'AdPrice': data[3],
-                'AdContact': data[4],
-                'AdEmail': data[5],
-                'AdDescription': data[6],
-                'AdCategory': data[7],
+                'UserName' : data[2],
+                'AdTitle': data[3],
+                'AdDate' : data[4].strftime('%Y-%m-%d'),
+                'AdPrice': data[5],
+                'AdContact': data[6],
+                'AdEmail': data[7],
+                'AdSpecification' : data[8],
+                'AdDescription': data[9],
+                'AdCategory': data[10],
             }
             print(Results.Image)
             response = {'Results': Results}
@@ -324,15 +332,28 @@ def create_app():
             price = request.form['ad-price']
             contact = request.form['ad-contact']
             email = request.form['ad-email']
+            specification = request.form['ad-specification']
             description = request.form['ad-description']
             category = request.form['ad-category']
             userId = session['userID']
+            userName = session['username']
+            adDate = datetime.today().strftime('%Y-%m-%d')
 
+            print(title)
+            print(price)
+            print(contact)
+            print(email)
+            print(specification)
+            print(description)
+            print(category)
+            print(userId)
+            print(userName)
+            print(adDate)
 
             db = get_db()
             cursor = db.cursor()
             try:
-                cursor.execute('INSERT INTO Advertisement (userID, addTitle, addPrice, addContact, addEmail, addInformation, category) VALUES (%s, %s, %s,%s, %s, %s,%s)', (userId, title,price,contact,email, description, category,))
+                cursor.execute('INSERT INTO Advertisement (userID, userName, addTitle, addDate, addPrice, addContact, addEmail,addSpecification, addInformation, category) VALUES (%s,%s,%s,%s,%s, %s,%s, %s, %s,%s)', (userId,userName,title,adDate,price,contact,email,specification,description, category,))
                 db.commit()
                 return jsonify({"title":"Save Ad Successful","message": "New Ad completed successfully","status":True}), 200
             except Exception as e:
@@ -377,6 +398,7 @@ def create_app():
                 price = request.form['ad-price']
                 contact = request.form['ad-contact']
                 email = request.form['ad-email']
+                specification = request.form['ad-specification']
                 description = request.form['ad-description']
                 category = request.form['ad-category']
                 userId = session['userID']
@@ -384,19 +406,19 @@ def create_app():
                 db = get_db()
                 cursor = db.cursor()
                 try:
-                    cursor.execute('UPDATE Advertisement SET addTitle = %s, addPrice = %s, addContact = %s, addEmail = %s, addInformation = %s, category = %s WHERE addID = %s', (title,price,contact,email, description,category, ad_id))
+                    cursor.execute('UPDATE Advertisement SET addTitle = %s, addPrice = %s, addContact = %s, addEmail = %s,addSpecification=%s, addInformation = %s, category = %s WHERE addID = %s', (title,price,contact,email,specification,description,category,ad_id))
                     db.commit()
-                    return jsonify({"message": "Update Ad details successfully"}), 200
+                    return jsonify({"title":"Update Ad Unsuccessful","message": "Ad updated successfully","status":True}), 200
                 except Exception as e:
                     db.rollback()
-                    return jsonify({"message": "Update Ad details unsuccessful"}), 500
+                    return jsonify({"title":"Update Ad Unsuccessful","message": "Ad updated unsuccessful","status":False}), 500
                 finally:
                     cursor.close()
 
-            return jsonify({"message": "Update Ad details unsuccessful"}), 200
+            return jsonify({"title":"Update Ad Unsuccessful","message": "Ad updated unsuccessful","status":False}), 500
         except Exception as e:
             logging.error(f"Failed to update Ad details: {str(e)}")
-            return jsonify({"error": "Failed to update Ad details", "details": str(e)}), 500
+            return jsonify({"title":"Update Ad Unsuccessful","message": "Ad updated unsuccessful","status":False}), 500
     
     # Delete Ad from Device and CompanyManufacturedDevice tables.
     @app.route('/delete_ad/<string:ad_id>', methods=['DELETE'])

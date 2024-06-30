@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('ad-price').value = adData.AdPrice;
         document.getElementById('ad-contact').value = adData.AdContact;
         document.getElementById('ad-email').value = adData.AdEmail;
+        document.getElementById('ad-specification').value = adData.AdSpecification;
         document.getElementById('ad-description').value = adData.AdDescription;
 
         
@@ -127,7 +128,7 @@ function confirmUpdate(formData) {
         })
         .then(response => response.json())
         .then(data => {
-            showMessage(data.message);
+            showErrorModal(data.title,data.message,data.status)
             clearForm()
         })
         .catch(error => {
