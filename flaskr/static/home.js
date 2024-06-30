@@ -1,6 +1,8 @@
 //function loadAdList
-function loadAdList() {
-    fetch('/get_ads')
+function loadAdList(category) {
+    const adContainer = document.querySelector('.ad-section .ad_container .ad_list');
+    adContainer.innerHTML = '';
+    fetch(`/get_ads/${category}`)
         .then(response => response.json())
         .then(data => {
             console.log(data);
@@ -14,7 +16,7 @@ function loadAdList() {
                                     <h3 class="adEmail">Email: ${x['AdEmail']}</h3>
                                     <p>${x['AdDescription']}</p>
                                   </div>`;
-                document.querySelector(`.ad-section`).querySelector(`.ad_container`).innerHTML += ad_element;
+                document.querySelector('.ad-section .ad_container .ad_list').innerHTML += ad_element;
             });
 
             // Add event listeners after elements are added to the DOM
@@ -33,12 +35,14 @@ function loadAdList() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+
     document.getElementById('user_status_login').style.display = 'block';
     document.getElementById('user_status_logout').style.display = 'none';
     document.getElementById("usernale_label").textContent = '@'+userData.Username;
-    loadAdList()
+    loadAdList('All')
     // Event listener for the "Create New Ad" button
-    document.getElementById('newAdBtn').addEventListener('click', function() {
+    document.getElementById('newAdBtn').addEventListener('click', function(event) {
+        event.preventDefault();
         console.log("Inside button click event handler")
         window.location.href = "new_advertisement";
     });

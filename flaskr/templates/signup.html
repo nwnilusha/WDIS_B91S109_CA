@@ -24,28 +24,28 @@
             <h2>Sign Up</h2>
             <form id="manageUserForm" action="{{ url_for('manageUsers') }}" method="post">
                 <div class="form-group">
-                    <label for="username">Username</label>
+                    <label class="required" for="username">Username</label>
                     <div class="input-container">
                         <img src="./static/images/username.png" alt="Username Icon" class="input-icon">
                         <input type="text" id="create_username" name="create_username" placeholder="Enter your username" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="email">Email</label>
+                    <label class="required" for="email">Email</label>
                     <div class="input-container">
                         <img src="./static/images/email.png" alt="Username Icon" class="input-icon">
                         <input type="email" id="create_email" name="create_email" placeholder="Enter your email" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="confirm-password">Password</label>
+                    <label class="required" for="confirm-password">Password</label>
                     <div class="input-container">
                         <img src="./static/images/password.png" alt="Username Icon" class="input-icon">
                         <input type="password" id="create_password" name="create_password" placeholder="Enter your password" required>
                     </div>         
                 </div>
                 <div class="form-group">
-                    <label for="confirm-password">Confirm Password</label>
+                    <label class="required" for="confirm-password">Confirm Password</label>
                     <div class="input-container">
                         <img src="./static/images/password.png" alt="Username Icon" class="input-icon">
                         <input type="password" id="create_confirm-password" name="create_confirm_password" placeholder="Confirm your password" required>

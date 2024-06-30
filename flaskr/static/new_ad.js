@@ -42,18 +42,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    showMessage(data.message);
+                    showErrorModal(data.title,data.message,data.status)
                     clearForm()
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    showErrorModal('Ad Save Error','Error Occured',false)
             });
         } else {
-
-            showConfirmModal('Update Advertisement','Are you sure you want to update this Ad?','update',formData);
-            
+            showConfirmModal('Update Advertisement','Are you sure you want to update this Ad?','update',formData);           
         }
 
+    });
+
+    const adPrice = document.getElementById('ad-price');
+    const adContact = document.getElementById('ad-contact');
+
+    adPrice.addEventListener('input', function(event) {
+        let value = event.target.value;
+        value = value.replace(/\D/g, '');
+        event.target.value = value;
+    });
+
+    adContact.addEventListener('input', function(event) {
+        let value = event.target.value;
+        value = value.replace(/\D/g, '');
+        event.target.value = value;
     });
 });
 
@@ -121,6 +135,45 @@ function confirmUpdate(formData) {
     });
 }
 
+function showErrorModal(title,discription,status) {
+
+    docTitle = document.getElementById("saveModalHeading")
+    docMessage = document.getElementById("saveModelDetails")
+
+    docTitle.textContent = title;
+    docMessage.textContent = discription;
+
+    if (status) {
+        docTitle.style.color = "green";
+        docMessage.style.color = "green";
+    }
+
+    const modal = document.getElementById("saveDataModal");
+    modal.style.display = "block";
+
+    const confirmYes = document.getElementById("saveConfirmYes");
+
+    confirmYes.onclick = null;
+
+    confirmYes.addEventListener('click', function() {
+        modal.style.display = "none";
+        if (status) {
+            window.location.href = `/home`;
+        }
+    });
+
+    const closeBtn = document.getElementsByClassName("close")[0];
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+}
+
 function showConfirmModal(modelTitle, modelDiscription,modelType,formData) {
 
     document.getElementById("modalHeading").textContent = modelTitle;
@@ -160,20 +213,7 @@ function showConfirmModal(modelTitle, modelDiscription,modelType,formData) {
         }
     };
 
-  const adPrice = document.getElementById('ad-price');
-  const adContact = document.getElementById('ad-contact');
-
-  adPrice.addEventListener('input', function(event) {
-      let value = event.target.value;
-      value = value.replace(/\D/g, '');
-      event.target.value = value;
-  });
-
-  adContact.addEventListener('input', function(event) {
-    let value = event.target.value;
-    value = value.replace(/\D/g, '');
-    event.target.value = value;
-  });
+  
 }
 
 

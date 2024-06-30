@@ -19,4 +19,10 @@
     </section>
 </main>
 
+<script type="text/javascript">
+  var userData = {{ userData | tojson }};
+  console.log(userData.Username)
+
+</script>
+
 {% endblock %}

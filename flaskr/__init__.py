@@ -1,8 +1,11 @@
+import base64
 import io
+from mailbox import Message, Mailbox
+import mailbox
 import re
 import secrets
 import string
-from flask import Flask, jsonify, logging, redirect, send_file, session, render_template, request, url_for
+from flask import Flask, app, flash, jsonify, logging, redirect, send_file, session, render_template, request, url_for
 from .db import get_db
 from flask_bcrypt import Bcrypt
 from flask_bcrypt import check_password_hash
@@ -27,7 +30,13 @@ def create_app():
 
     @app.route('/', methods=['GET', 'POST'])
     def appInit():
+        # userDetails = {
+        #     'Username': 'Nilusha',
+        #     'UserRole': 'Admin',
+        # }
+        # return render_template('home.html', userData=userDetails)
        return render_template('login.html')
+    
 
     @app.route('/login_app', methods=['GET', 'POST'])
     def login_app():
@@ -60,8 +69,7 @@ def create_app():
             else:
                 return jsonify({"user": "nil", "message": "Incorrect Username or Password"}), 500
        else:
-        #    return render_template('test.html')
-        return jsonify({"user": "nil", "message": "Login unsuccessful"}), 500
+           return render_template('login.html')
     
     @app.route('/logout')
     def logout():
@@ -116,21 +124,58 @@ def create_app():
             else:
                 Results = {
                         'AdId': 0,
+                        'Username': username,
                     }
                 return render_template('new_ad.html', adDataUpdate=Results)
         else:
             # Redirect to login if username not found in session
-            return redirect(url_for('login'))
+            return redirect(url_for('login_app'))
 
         
     
     @app.route('/about_us', methods=['GET', 'POST'])
     def about_us():
-        return render_template('about_us.html')
+        if 'username' in session:
+            username = session['username']
+            Results = {
+                'Username': username,
+            }
+            username = session['username']
+            return render_template('about_us.html',userData=Results)
+        else:
+            return redirect(url_for('login_app'))
+        
     
     @app.route('/contact_us', methods=['GET', 'POST'])
     def contact_us():
-        return render_template('contact_us.html')
+        if 'username' in session:
+            username = session['username']
+            Results = {
+                'Username': username,
+            }
+            username = session['username']
+            return render_template('contact_us.html',userData=Results)
+        else:
+            return redirect(url_for('login_app'))
+        
+    @app.route('/send_message', methods=['POST'])
+    def send_message():
+        name = request.form['name']
+        email = request.form['email']
+        message = request.form['message']
+        
+        msg = Message(subject=f"Contact Form Submission from {name}",
+                    sender='nw.nilusha@gmail.com',
+                    recipients=['your_email@example.com'], 
+                    body=f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}")
+        
+        try:
+            mailbox.send(msg)
+            flash('Message sent successfully!', 'success')
+        except Exception as e:
+            flash(f'Failed to send message: {e}', 'danger')
+        
+        return redirect(url_for('contact_us'))
     
     def convert_to_binary(filename):
         with open(filename, 'rb') as file:
@@ -204,10 +249,11 @@ def create_app():
     
 
     # Get all Ad list
-    @app.route('/get_ads')
-    def get_ads():
+    @app.route('/get_ads/<string:ad_cat>')
+    def get_ads(ad_cat):
         print('Inside get ads')
-        ad_data = fetch_all_ads()
+        print(ad_cat)
+        ad_data = fetch_all_ads(ad_cat)
         Results = []
         for row in ad_data:
             Result = {
@@ -225,10 +271,17 @@ def create_app():
         return jsonify(response)  # Use jsonify to convert response to JSON
     
      # Fetch all data from Advertisement tables.
-    def fetch_all_ads():
+    def fetch_all_ads(ad_cat):
         db = get_db()
+        print('Inside get all ads')
         cursor = db.cursor()
-        cursor.execute("SELECT  * FROM Advertisement")
+        if ad_cat == 'All':
+            print('Inside get ads -- All')
+            cursor.execute("SELECT  * FROM Advertisement")
+        else:
+            print('Inside get ads -- cat')
+            cursor.execute("SELECT  * FROM Advertisement WHERE category=%s",(ad_cat,))
+
         data = cursor.fetchall()
         cursor.close()
 
@@ -254,7 +307,7 @@ def create_app():
                 'AdDescription': data[6],
                 'AdCategory': data[7],
             }
-
+            print(Results.Image)
             response = {'Results': Results}
             return jsonify(response)
         except Exception as e:
@@ -273,56 +326,49 @@ def create_app():
             email = request.form['ad-email']
             description = request.form['ad-description']
             category = request.form['ad-category']
-            # userId = session['userID']
-            userId = 1
+            userId = session['userID']
+
 
             db = get_db()
             cursor = db.cursor()
             try:
-                cursor.execute('INSERT INTO Advertisement (userID, addTitle, addPrice, addContact, addEmail, addInformation, category) VALUES (%s, %s, %s,%s, %s, %s,%s)', (userId, title,price,contact,email, description, category))
+                cursor.execute('INSERT INTO Advertisement (userID, addTitle, addPrice, addContact, addEmail, addInformation, category) VALUES (%s, %s, %s,%s, %s, %s,%s)', (userId, title,price,contact,email, description, category,))
                 db.commit()
-                return jsonify({"message": "New Ad completed successfully"}), 200
+                return jsonify({"title":"Save Ad Successful","message": "New Ad completed successfully","status":True}), 200
             except Exception as e:
                 db.rollback()
-                return jsonify({"message": "New Ad unsuccessful"}), 500
+                return jsonify({"title":"Save Ad Error","message": "New Ad unsuccessful","status":False}), 500
             finally:
                 cursor.close()
     
-           
-            
-            # # Check if the post request has the file part
+
             # if 'ad-image' not in request.files:
-            #     return 'No file part'
+            #     return jsonify({"message": "No Image Selected"}), 500
             
             # file = request.files['ad-image']
-            
-            # # If the user does not select a file, the browser submits an empty file without a filename
+
             # if file.filename == '':
-            #     return 'No selected file'
+            #     return jsonify({"title":"Save Ad Error","message": "No Image Selected","status":False}), 500
             
             # if file:
             #     image_data = file.read()
-                
-            #     # Save ad information in the database
+
             #     db = get_db()
             #     cursor = db.cursor()
             #     try:
-            #         cursor.execute('INSERT INTO Advertisement (userID, addTitle, addInformation, category, image) VALUES (%s, %s, %s,%s, %s)', (userId, title, description, category, image_data))
+            #         cursor.execute('INSERT INTO Advertisement (userID, addTitle, addPrice, addContact, addEmail, addInformation, category, image) VALUES (%s, %s, %s,%s, %s, %s,%s,%s)', (userId, title,price,contact,email, description, category, image_data))
             #         db.commit()
-            #         msg = 'User registered successfully!'
-            #         return render_template('new_ad.html', msg=msg)
+            #         return jsonify({"title":"Save Ad Successful","message": "New Ad completed successfully","status":True}), 200
             #     except Exception as e:
             #         db.rollback()
-            #         error_msg = f'Error inserting user: {e}'
-            #         return render_template('new_ad.html', error_msg=error_msg)
+            #         return jsonify({"title":"Save Ad Error","message": "New Ad unsuccessful","status":False}), 500
             #     finally:
             #         cursor.close()
+            # return jsonify({"title":"Save Ad Error","message": "No Image Selected","status":False}), 500
                 
-            # return render_template('new_ad.html', msg='No image selected')
+        return render_template('new_ad.html')
         
-        return 'Error in form submission'
 
-    # Update device data in Device and CompanyManufacturedDevice tables.
     @app.route('/update_ad/<string:ad_id>', methods=['POST'])
     def update_ad(ad_id):
         try:
@@ -333,13 +379,7 @@ def create_app():
                 email = request.form['ad-email']
                 description = request.form['ad-description']
                 category = request.form['ad-category']
-                # userId = session['userID']
-                userId = 1
-                print(title);
-                print(price);
-                print(contact);
-                print(email);
-                print(description);
+                userId = session['userID']
 
                 db = get_db()
                 cursor = db.cursor()
@@ -366,12 +406,25 @@ def create_app():
             db = get_db()
             cursor = db.cursor()
             cursor.execute("DELETE FROM Advertisement WHERE addID = %s", (ad_id,))
-            cursor.close()  # Close the cursor after use
+            cursor.close()  
             return jsonify({"message": "Ad deleted successfully"}), 200
         except Exception as e:
             return jsonify({"error": "Failed to delete Ad", "details": str(e)}), 500
+    
+    @app.route('/get_ad_image', methods=['POST'])
+    def get_ad_image():
+        try:
+            db = get_db()
+            cursor = db.cursor()
+            cursor.execute("SELECT image FROM Advertisement WHERE addID = %s", (1,))
+            data = cursor.fetchone()
+            cursor.close()  
+            return send_file(io.BytesIO(data), mimetype='image/jpeg')
+        except Exception as e:
+            return jsonify({"error": "Failed to delete Ad", "details": str(e)}), 500
+    
 
     return app
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port='8080') # indent this line
+    app.run(host='0.0.0.0', port='8080') 

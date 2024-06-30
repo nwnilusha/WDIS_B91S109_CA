@@ -10,34 +10,36 @@
 
 <main>
     <div class="home_container">
-        <section class="ad-section">
-            <div class="new-add-row">
-                <a href="{{ url_for('new_advertisement') }}">
-                    <button class="new-add">+ New Advertisement</button>
-                </a>
-                <!-- <button class="new-add" id="newAdBtn">+ New Advertisement</button> -->
+        <section class="side-section">
+            <h3>Browse Advertisements</h3>
+            <div class="side-category">
+                <label onclick="loadAdList('All')"><h5>All Ads</h5></label>
+                <label onclick="loadAdList('House')"><h5>House Ads</h5></label>
+                <label onclick="loadAdList('Vehicle')"><h5>Vehicle Ads</h5></label>
+                <label onclick="loadAdList('Land')"><h5>Land Ads</h5></label>
+                <label onclick="loadAdList('Other')"><h5>Other Ads</h5></label>
             </div>
-            <div class="ad_container">
-                <h2>Featured Ads</h2>
-            </div>
-            
-            
-        </section>
 
-        <!-- <section class="ad-section">
-            <h2>Sponsored Ads</h2>
-            <div class="ad">
-                <img src="ad4.jpg" alt="Ad 4">
-                <h3>Ad Title 4</h3>
-                <p>Ad description goes here. This is a brief description of the advertisement.</p>
+        </section>
+        <section class="ad-section">
+            <!-- This is the 75% width section -->
+            <div class="ad_container">
+                <div class="new-add-row">
+                    <a href="{{ url_for('new_advertisement') }}">
+                        <button class="new-add">+ New Advertisement</button>
+                    </a>
+                    <!-- <button class="new-add" id="newAdBtn">+ New Advertisement</button> -->
+                </div>
+                <div class="ad_container">
+                    <h2>All Advertisements</h2>
+                </div>
+                <div class="ad_list">
+
+                </div>
             </div>
-            <div class="ad">
-                <img src="ad5.jpg" alt="Ad 5">
-                <h3>Ad Title 5</h3>
-                <p>Ad description goes here. This is a brief description of the advertisement.</p>
-            </div>
-        </section> -->
+        </section>
     </div>
+    
 </main>
 
 <script type="text/javascript">

@@ -55,3 +55,34 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background: #2575fc;
 }
+
+.home_container {
+    width: 95%; 
+    margin: 20px auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+}
+.container2 {
+    width: 95%; 
+    margin: 20px auto;
+    overflow: hidden;
+    display:flex;
+}
+
+.side-section {
+    width: 25%;
+    background-color: #f4f4f4; /* Optional: Add a background color to distinguish the sections */
+    padding: 10px;
+}
+
+.subcard1 {
+    border: 2px solid rgba(41, 41, 42, 0.5);
+    padding: 12px 30px;
+    margin-right: 10px;
+}
+
+.ad-section {
+    width: 75%;
+    padding: 10px;
+}
