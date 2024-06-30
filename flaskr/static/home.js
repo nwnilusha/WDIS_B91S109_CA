@@ -2,64 +2,25 @@
 function loadAdList(category) {
     const adContainer = document.querySelector('.ad-section .ad_container .ad_list');
     adContainer.innerHTML = '';
+    setUIDefault()
     if (category == 'All') {
         document.getElementById('advertisement_title').textContent = "All Advertisements"
         document.getElementById('all_ads').style.color = 'green';
         document.getElementById('all_ads').style.textDecoration = 'underline';
-        document.getElementById('house_ads').style.color = 'black';
-        document.getElementById('house_ads').style.textDecoration = 'none';
-        document.getElementById('vehicle_ads').style.color = 'black';
-        document.getElementById('vehicle_ads').style.textDecoration = 'none';
-        document.getElementById('land_ads').style.color = 'black';
-        document.getElementById('land_ads').style.textDecoration = 'none';
-        document.getElementById('other_ads').style.color = 'black';
-        document.getElementById('other_ads').style.textDecoration = 'none';
     } else if (category == 'House') {
         document.getElementById('advertisement_title').textContent = "House Advertisements"
-        document.getElementById('all_ads').style.color = 'black';
-        document.getElementById('all_ads').style.textDecoration = 'none';
         document.getElementById('house_ads').style.color = 'green';
         document.getElementById('house_ads').style.textDecoration = 'underline';
-        document.getElementById('vehicle_ads').style.color = 'black';
-        document.getElementById('vehicle_ads').style.textDecoration = 'none';
-        document.getElementById('land_ads').style.color = 'black';
-        document.getElementById('land_ads').style.textDecoration = 'none';
-        document.getElementById('other_ads').style.color = 'black';
-        document.getElementById('other_ads').style.textDecoration = 'none';
     } else if (category == 'Vehicle') {
         document.getElementById('advertisement_title').textContent = "Vehicle Advertisements"
-        document.getElementById('all_ads').style.color = 'black';
-        document.getElementById('all_ads').style.textDecoration = 'none';
-        document.getElementById('house_ads').style.color = 'black';
-        document.getElementById('house_ads').style.textDecoration = 'none';
         document.getElementById('vehicle_ads').style.color = 'green';
         document.getElementById('vehicle_ads').style.textDecoration = 'underline';
-        document.getElementById('land_ads').style.color = 'black';
-        document.getElementById('land_ads').style.textDecoration = 'none';
-        document.getElementById('other_ads').style.color = 'black';
-        document.getElementById('other_ads').style.textDecoration = 'none';
     } else if (category == 'Land') {
         document.getElementById('advertisement_title').textContent = "Land Advertisements"
-        document.getElementById('all_ads').style.color = 'black';
-        document.getElementById('all_ads').style.textDecoration = 'none';
-        document.getElementById('house_ads').style.color = 'black';
-        document.getElementById('house_ads').style.textDecoration = 'none';
-        document.getElementById('vehicle_ads').style.color = 'black';
-        document.getElementById('vehicle_ads').style.textDecoration = 'none';
         document.getElementById('land_ads').style.color = 'green';
         document.getElementById('land_ads').style.textDecoration = 'underline';
-        document.getElementById('other_ads').style.color = 'black';
-        document.getElementById('other_ads').style.textDecoration = 'none';
     } else if (category == 'Other') {
         document.getElementById('advertisement_title').textContent = "Other Advertisements"
-        document.getElementById('all_ads').style.color = 'black';
-        document.getElementById('all_ads').style.textDecoration = 'none';
-        document.getElementById('house_ads').style.color = 'black';
-        document.getElementById('house_ads').style.textDecoration = 'none';
-        document.getElementById('vehicle_ads').style.color = 'black';
-        document.getElementById('vehicle_ads').style.textDecoration = 'none';
-        document.getElementById('land_ads').style.color = 'black';
-        document.getElementById('land_ads').style.textDecoration = 'none';
         document.getElementById('other_ads').style.color = 'green';
         document.getElementById('other_ads').style.textDecoration = 'underline';
     }
@@ -101,6 +62,20 @@ function loadAdList(category) {
             }
             
         })
+}
+
+function setUIDefault() {
+    document.getElementById('advertisement_title').textContent = "Vehicle Advertisements"
+        document.getElementById('all_ads').style.color = 'black';
+        document.getElementById('all_ads').style.textDecoration = 'none';
+        document.getElementById('house_ads').style.color = 'black';
+        document.getElementById('house_ads').style.textDecoration = 'none';
+        document.getElementById('vehicle_ads').style.color = 'black';
+        document.getElementById('vehicle_ads').style.textDecoration = 'none';
+        document.getElementById('land_ads').style.color = 'black';
+        document.getElementById('land_ads').style.textDecoration = 'none';
+        document.getElementById('other_ads').style.color = 'black';
+        document.getElementById('other_ads').style.textDecoration = 'none';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
