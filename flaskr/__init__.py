@@ -24,7 +24,7 @@ def create_app():
     app.config['SECRET_KEY'] = generate_secret_key()
 
     # Initialize CSRF protection
-    csrf = CSRFProtect(app)
+    # csrf = CSRFProtect(app)
 
     app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
