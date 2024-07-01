@@ -1,35 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup Page</title>
-    <link rel="stylesheet" href="static/home_styles.css">
-</head>
-<body>
-    <div class="login-container">
-        <div class="login-form">
-            <h2>Signup</h2>
-            <form action="/signup" method="post">
-                <div class="input-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
-                </div>
-                <div class="input-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                </div>
-                <div class="input-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                </div>
-                <div class="input-group">
-                    <label for="confirm-password">Confirm Password</label>
-                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
-                </div>
-                <input type="submit" value="Signup">
-            </form>
-        </div>
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Signup User{% endblock %}</h1>
+{% endblock %}
+
+{% block page_content_1 %}
+
+<script src="{{ url_for('static', filename='signup.js') }}"></script>
+
+<div id="confirmationModal" class="confirm_modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalHeading">Signup Error</h2>
+        <p id="modelDetails">Username or Password incorrect</p>
+        <button id="confirmYes">OK</button>
     </div>
-</body>
-</html>
+  </div>
+
+<main>
+    <div class="signup_container">
+        <section class="signup-section">
+            <img src="./static/images/post-free-ads.jpg" alt="Signup Image" class="signup-image">
+            <h2>Sign Up</h2>
+            <form id="manageUserForm" action="{{ url_for('manageUsers') }}" method="post">
+                <div class="form-group">
+                    <label class="required" for="username">Username</label>
+                    <div class="input-container">
+                        <img src="./static/images/username.png" alt="Username Icon" class="input-icon">
+                        <input type="text" id="create_username" name="create_username" placeholder="Enter your username" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="email">Email</label>
+                    <div class="input-container">
+                        <img src="./static/images/email.png" alt="Username Icon" class="input-icon">
+                        <input type="email" id="create_email" name="create_email" placeholder="Enter your email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="confirm-password">Password</label>
+                    <div class="input-container">
+                        <img src="./static/images/password.png" alt="Username Icon" class="input-icon">
+                        <input type="password" id="create_password" name="create_password" placeholder="Enter your password" required>
+                    </div>         
+                </div>
+                <div class="form-group">
+                    <label class="required" for="confirm-password">Confirm Password</label>
+                    <div class="input-container">
+                        <img src="./static/images/password.png" alt="Username Icon" class="input-icon">
+                        <input type="password" id="create_confirm-password" name="create_confirm_password" placeholder="Confirm your password" required>
+                    </div>     
+                </div>
+                <button type="submit">Sign Up</button>
+                <p>Already have an account? <a href="{{ url_for('login_app') }}">Login</a></p>
+                {% if msg %}
+                <p style="color: green;">{{ msg }}</p>
+                {% endif %}
+            </form>
+        </section>
+    </div>
+</main>
+
+
+
+{% endblock %}

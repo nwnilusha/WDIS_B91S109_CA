@@ -1,65 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advertising Website</title>
-    <link rel="stylesheet" href="static/home_styles.css">
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>Advertise With Us</h1>
-            <nav>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+{% extends 'base.html' %}
 
-    <main>
-        <section id="home">
-            <div class="container">
-                <h2>Welcome to Our Advertising Platform</h2>
-                <p>We help you reach your target audience effectively and efficiently. Discover our services and see how we can help you grow your business.</p>
+{% block header %}
+  <h1>{% block title %}Advertisement Hub{% endblock %}</h1>
+{% endblock %}
+
+{% block page_content_1 %}
+
+<script src="{{ url_for('static', filename='home.js') }}"></script>
+
+<main>
+    <div class="home_container">
+        <section class="side-section">
+            <h3>Browse Advertisements</h3>
+            <div class="side-category">
+                <label onclick="loadAdList('All')"><h5 id="all_ads">All Ads</h5></label>
+                <label onclick="loadAdList('House')"><h5 id="house_ads">House Ads</h5></label>
+                <label onclick="loadAdList('Vehicle')"><h5 id="vehicle_ads">Vehicle Ads</h5></label>
+                <label onclick="loadAdList('Land')"><h5 id="land_ads">Land Ads</h5></label>
+                <label onclick="loadAdList('Other')"><h5 id="other_ads">Other Ads</h5></label>
             </div>
-        </section>
 
-        <section id="about">
-            <div class="container">
-                <h2>About Us</h2>
-                <p>We are a leading advertising company with years of experience in helping businesses like yours succeed. Our team of experts is dedicated to creating and managing advertising campaigns that deliver results.</p>
-            </div>
         </section>
+        <section class="ad-section">
+            <div class="ad_container">
+                <div class="new-add-row">
+                    <a href="{{ url_for('new_advertisement') }}">
+                        <button class="new-add">+ New Advertisement</button>
+                    </a>
+                </div>
+                <div class="ad_container">
+                    <h2 id="advertisement_title">All Advertisements</h2>
+                </div>
+                <div class="ad_list">
 
-        <section id="services">
-            <div class="container">
-                <h2>Our Services</h2>
-                <div class="service">
-                    <h3>Digital Marketing</h3>
-                    <p>Maximize your online presence with our comprehensive digital marketing services, including SEO, SEM, social media marketing, and more.</p>
-                </div>
-                <div class="service">
-                    <h3>Print Advertising</h3>
-                    <p>Reach your audience through traditional print media with our expertly crafted print advertising solutions.</p>
-                </div>
-                <div class="service">
-                    <h3>Consultation Services</h3>
-                    <p>Get professional advice and strategies tailored to your business needs with our consultation services.</p>
                 </div>
             </div>
         </section>
-    </main>
+    </div>
+    
+</main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Advertise With Us. All rights reserved.</p>
-            <p>Contact us: <a href="mailto:info@advertisewithus.com">info@advertisewithus.com</a></p>
-        </div>
-    </footer>
-</body>
-</html>
+<script type="text/javascript">
+    var userData = {{ userData | tojson }};
+    console.log(userData.Username)
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}New Advertisement{% endblock %}</h1>
+{% endblock %}
+
+{% block page_content_1 %}
+
+<link rel="stylesheet" href="static/new_add.css">
+<script src="{{ url_for('static', filename='new_ad.js') }}"></script>
+
+<div id="confirmationModal" class="confirm_modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalHeading">Delete Advertisement</h2>
+        <p id="modelDetails">Are you sure you want to delete this Ad?</p>
+        <button id="confirmYes">Yes</button>
+        <button id="confirmNo">No</button>
+    </div>
+</div>
+
+<div id="saveDataModal" class="confirm_modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="saveModalHeading">New Advertisement</h2>
+        <p id="saveModelDetails">New Advertisement Create Successfully.</p>
+        <button id="saveConfirmYes">OK</button>
+    </div>
+</div>
+
+<main class="insert-ad-container">
+    <section class="insert-ad-section">
+        <h2>Insert Advertisement</h2>
+        <form class="new_ad_form" id="newAdForm" action="{{ url_for('submit_ad') }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label class="required" for="ad-title">Title</label>
+                <input type="text" id="ad-title" name="ad-title" placeholder="Enter the ad title" required>
+            </div>
+            <div class="form-group">
+                <label class="required" for="ad-category">Ad Category</label>
+                <select id="ad-category" name="ad-category" required>
+                    <option value="House">House</option>
+                    <option value="Vehicle">Vehicle</option>
+                    <option value="Land">Land</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="required" for="ad-price">Item Price</label>
+                <input type="number" id="ad-price" name="ad-price" placeholder="Enter the item price" required>
+            </div>
+            <div class="form-group">
+                <label class="required" for="ad-contact">Contact Number</label>
+                <input type="tel" id="ad-contact" name="ad-contact" placeholder="Enter the contact number" required>
+            </div>
+            <div class="form-group">
+                <label class="required" for="ad-email">Email Address</label>
+                <input type="email" id="ad-email" name="ad-email" placeholder="Enter the email address" required>
+            </div>
+            <div class="form-group">
+                <label class="required" for="ad-specification">Specification</label>
+                <input type="text" id="ad-specification" name="ad-specification" placeholder="Enter specification" required>
+            </div>
+            <div class="form-group">
+                <label class="required" for="ad-description">Description</label>
+                <textarea id="ad-description" name="ad-description" placeholder="Enter the ad description"
+                    required></textarea>
+            </div>
+            <!-- <div class="form-group">
+                <label for="ad-image">Image</label>
+                <input type="file" id="ad-image" name="ad-image" accept="image/*" onchange="displayImage(event)"
+                    required>
+                <img id="image-preview" class="image-preview" src="#" alt="Image Preview" style="display: none;">
+            </div> -->
+            <div class="ad_button_container">
+
+            </div>
+        </form>
+    </section>
+    <div id="popupMessage" class="popup">
+        <span id="messageText"></span>
+    </div>
+</main>
+<script type="text/javascript">
+    var adData = {{ adDataUpdate | tojson }};
+    console.log(adData.AdTitle)
+
+</script>
+
+
+{% endblock %}
