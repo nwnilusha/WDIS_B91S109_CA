@@ -13,6 +13,7 @@ from flask_bcrypt import check_password_hash
 from flask_mysqldb import MySQL
 import os
 from werkzeug.utils import secure_filename
+from flask_wtf.csrf import CSRFProtect
 
 def generate_secret_key(length=32):
     alphabet = string.ascii_letters + string.digits + '!@#$%^&*()-=_+'
@@ -21,6 +22,9 @@ def generate_secret_key(length=32):
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = generate_secret_key()
+
+    # Initialize CSRF protection
+    csrf = CSRFProtect(app)
 
     app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
@@ -217,10 +221,6 @@ def create_app():
             if username_exists(username):
                 error_msg = 'Username already exists. Please use another Username.'
                 return jsonify({"message": error_msg, "status":False}), 500
-            
-            # if is_valid_email(email):
-            #     error_msg = 'Email is not correct format. Please enter correct email.'
-            #     return jsonify({"message": error_msg}), 500
 
             if (len(password) < 4):
                 error_msg = 'Password must be atleast 4 characters'
