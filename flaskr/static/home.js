@@ -28,18 +28,23 @@ function loadAdList(category) {
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            var clickableItem = '';
-            if (userData.UserRole == 'Admin') {
-                clickableItem = `<span class="clickable-item" onclick="" style="position: absolute; top: 10px; right: 10px; cursor: pointer;">&#9193;</span>`;
-            }
+            
+            
+            data.Results.sort((a, b) => {
+                return b.AdId - a.AdId;
+            });
             data.Results.forEach(x => {
                 console.log('Inside load ad list nilusha')
                 console.log(x)
+                var clickableItem = '';
+                if (userData.UserRole == 'Admin' || x['UserId'] == x['logedUserId']) {
+                    clickableItem = `<span class="clickable-item" onclick="" style="position: absolute; top: 10px; right: 10px; cursor: pointer;">&#9193;</span>`;
+                }
                 var ad_element = `<div class="ad" id=${x['AdId']} style="position: relative;">
                                     ${clickableItem}
                                     <h2 class="adTitle">${x['AdCategory']} - ${x['AdTitle']}</h2>
                                     <div style="display: flex; justify-content: space-between;">
-                                        <h3 class="adPrice">Price: $ ${x['AdPrice']}</h3>
+                                        <h3 class="adPrice">Price: <span>&#8364;</span> ${x['AdPrice']}</h3>
                                         <h3 class="adDate">Date: <span>&#128197;</span> ${x['AdDate']}</h3>
                                     </div>
                                     <h3 class="adContact">Enquire Now: <span>&#128222;</span> ${x['AdContact']} - @ [${x['UserName']}]</h3>
@@ -50,16 +55,16 @@ function loadAdList(category) {
                 document.querySelector('.ad-section .ad_container .ad_list').innerHTML += ad_element;
             });
 
-            if (userData.UserRole == 'Admin') {
-                data.Results.forEach(x => {
+            data.Results.forEach(x => {
+                if (userData.UserRole == 'Admin' || x['UserId'] == x['logedUserId']) {
                     document.getElementById(x['AdId']).addEventListener('click', function() {
                         console.log('Click add :' + x['AdId']);
                         const adId = x['AdId'];
     
                         window.location.href = `/new_advertisement?adId=${adId}`;
                     });
-                });
-            }
+                }
+            });
             
         })
 }

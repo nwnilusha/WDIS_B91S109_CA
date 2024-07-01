@@ -270,6 +270,7 @@ def create_app():
                 'AdSpecification' : data[8],
                 'AdDescription': data[9],
                 'AdCategory': data[10],
+                'logedUserId': session['userID'], 
             }
             Results.append(Result)
         response = {'Results': Results, 'count': len(Results)}
