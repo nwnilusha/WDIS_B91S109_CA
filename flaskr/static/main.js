@@ -24,6 +24,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('user_status_login').style.display = 'none';
 
+    document.getElementById('google_login').addEventListener('click', function(event) {
+        event.preventDefault(); 
+
+        window.location.href = `/google_login`;
+        // fetch(`/google_login`, {
+        //     method: 'GET',
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         if (data.user != "nil") {
+        //             console.log('Login success')
+        //             window.location.href = `/home`;
+        //         } else {
+        //             console.log('Login un-success')
+        //             showConfirmModal(data.message)
+        //         }
+        //     })
+        //     .catch(error => {
+        //         console.error('Error:', error);
+        // });
+    });
+
     document.getElementById('loginForm').addEventListener('submit', function(event) {
         event.preventDefault(); 
 

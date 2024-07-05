@@ -37,7 +37,7 @@ function loadAdList(category) {
                 console.log('Inside load ad list nilusha')
                 console.log(x)
                 var clickableItem = '';
-                if (userData.UserRole == 'Admin' || x['UserId'] == x['logedUserId']) {
+                if (userData.UserRole == 'Admin' || x['UserName'] == x['logedUserName']) {
                     clickableItem = `<span class="clickable-item" onclick="" style="position: absolute; top: 10px; right: 10px; cursor: pointer;">&#9193;</span>`;
                 }
                 var ad_element = `<div class="ad" id=${x['AdId']} style="position: relative;">
@@ -56,7 +56,7 @@ function loadAdList(category) {
             });
 
             data.Results.forEach(x => {
-                if (userData.UserRole == 'Admin' || x['UserId'] == x['logedUserId']) {
+                if (userData.UserRole == 'Admin' || x['UserName'] == x['logedUserName']) {
                     document.getElementById(x['AdId']).addEventListener('click', function() {
                         console.log('Click add :' + x['AdId']);
                         const adId = x['AdId'];

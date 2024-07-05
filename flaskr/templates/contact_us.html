@@ -7,23 +7,33 @@
 {% block page_content_1 %}
 
 <link rel="stylesheet" href="static/contact_us.css">
+<script src="{{ url_for('static', filename='contact_us.js') }}"></script>
+
+<div id="saveDataModal" class="confirm_modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="saveModalHeading">New Advertisement</h2>
+        <p id="saveModelDetails">New Advertisement Create Successfully.</p>
+        <button id="saveConfirmYes">OK</button>
+    </div>
+</div>
 
 <main class="contact-container">
     <section class="contact-section">
         <h2>Contact Us</h2>
         <p>If you have any questions, suggestions, or concerns, feel free to reach out to us. We'd love to hear from you!</p>
-        <form  method="post">
+        <form id="contact_form"  action="{{ url_for('send_mail') }}" method="post">
             <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" placeholder="Your name" required>
+                <label for="mail-name">Name</label>
+                <input type="text" id="mail-name" name="mail-name" placeholder="Your name" required>
             </div>
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Your email" required>
+                <label for="recepient-email">Email</label>
+                <input type="email" id="recepient-email" name="recepient-email" placeholder="Your email" required>
             </div>
             <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" placeholder="Your message" required></textarea>
+                <label for="contact-message">Message</label>
+                <textarea id="contact-message" name="contact-message" placeholder="Your message" required></textarea>
             </div>
             <button type="submit">Send Message</button>
         </form>
