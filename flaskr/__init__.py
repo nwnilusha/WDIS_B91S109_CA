@@ -58,7 +58,7 @@ def create_app():
         userinfo_endpoint='https://www.googleapis.com/oauth2/v3/userinfo',
         jwks_uri='https://www.googleapis.com/oauth2/v3/certs',
         client_kwargs={'scope': 'openid profile email'},
-        redirect_uri='https://advertisementhub-fa406cdf9ed7.herokuapp.com/authorize',
+        # redirect_uri='https://advertisementhub-fa406cdf9ed7.herokuapp.com/authorize',
     )
 
     bcrypt = Bcrypt(app)
@@ -150,6 +150,7 @@ def create_app():
     @app.route('/logout')
     def logout():
         session.clear()
+        user_logged = ''
         return render_template('login.html')
     
     @app.route('/signup', methods=['GET', 'POST'])
@@ -158,7 +159,7 @@ def create_app():
     
     @app.route('/home', methods=['GET', 'POST'])
     def home():
-        if 'username' in session:
+        if 'username' in session or user_logged != '':
             username = session['username']
             userrole = session['userRole']
             userDetails = {
@@ -171,7 +172,7 @@ def create_app():
     
     @app.route('/new_advertisement', methods=['GET', 'POST'])
     def new_advertisement():
-        if 'username' in session:
+        if 'username' in session or user_logged != '':
             username = session['username']
         
             ad_id = request.args.get('adId')
@@ -205,7 +206,7 @@ def create_app():
     
     @app.route('/about_us', methods=['GET', 'POST'])
     def about_us():
-        if 'username' in session:
+        if 'username' in session or user_logged != '':
             username = session['username']
             Results = {
                 'Username': username,
@@ -218,7 +219,7 @@ def create_app():
     
     @app.route('/contact_us', methods=['GET', 'POST'])
     def contact_us():
-        if 'username' in session:
+        if 'username' in session or user_logged != '':
             username = session['username']
             Results = {
                 'Username': username,
@@ -271,7 +272,7 @@ def create_app():
     
     @app.route('/manage_users', methods=['GET', 'POST'])
     def manageUsers():
-        if request.method == 'POST':
+        if 'username' in session or user_logged != '':
             username = request.form['create_username']
             password = request.form['create_password']
             email = request.form['create_email']
