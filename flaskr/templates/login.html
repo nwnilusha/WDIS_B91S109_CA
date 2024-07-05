@@ -18,20 +18,20 @@
 <main>
   <div class="signup_container">
     <section class="signup-section">
-      <img src="./static/images/post-free-ads.jpg" alt="Signup Image" class="signup-image">
+      <img src="{{ url_for('static', filename='post-free-ads.jpg') }}" alt="Signup Image" class="signup-image">
       <h2>Login for Adds Zone</h2>
       <form class="login-form card" id="loginForm" action="{{ url_for('login_app') }}" method="POST">
         <div class="form-group">
           <label for="username">Username</label>
           <div class="input-container">
-            <img src="./static/images/username.png" alt="Username Icon" class="input-icon">
+            <img src="{{ url_for('static', filename='username.png') }}" alt="Username Icon" class="input-icon">
             <input type="text" id="username" name="username" placeholder="Enter your username" required>
           </div>
         </div>
         <div class="form-group">
           <label for="password">Password</label>
           <div class="input-container">
-            <img src="./static/images/password.png" alt="Password Icon" class="input-icon">
+            <img src="{{ url_for('static', filename='password.png') }}" alt="Password Icon" class="input-icon">
             <input type="password" id="password" name="password" placeholder="Confirm your password" required>
           </div>
         </div>
