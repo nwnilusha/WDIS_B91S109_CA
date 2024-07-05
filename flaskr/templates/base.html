@@ -21,7 +21,7 @@
                     <!-- <li class="header_section"><a href="{{ url_for('contact_us') }}">Contact</a></li> -->
                     <li id="user_status_login" class="user-status">
                         <a href="#" id="userStatusDropdown" onclick="toggleDropdown()">
-                            <img src="./static/images/loggedIn.png" alt="User Image">
+                            <img src="{{ url_for('static', filename='loggedIn.png') }}" alt="User Image">
                             <label id="usernale_label">Username </label><span>&#9662;</span>
                         </a>
                         <div id="dropdownMenu" class="dropdown-content">
@@ -30,7 +30,7 @@
                     </li>
                     <li id="user_status_logout" class="user-status">
                         <div class="user-status-image">
-                            <img src="./static/images/logout.png" alt="User Image">
+                            <img src="{{ url_for('static', filename='logout.png') }}" alt="User Image">
                             <label>Login</label>
                         </div>
                         
