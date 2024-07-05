@@ -39,8 +39,8 @@ def create_app():
 
     # CORS(app)
     # Google OAuth configuration
-    app.config['GOOGLE_CLIENT_ID'] = '947090452022-15fi7jfug3e7v31do1ps1e7idmrm6v9n.apps.googleusercontent.com'
-    app.config['GOOGLE_CLIENT_SECRET'] = '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'
+    # app.config['GOOGLE_CLIENT_ID'] = '947090452022-15fi7jfug3e7v31do1ps1e7idmrm6v9n.apps.googleusercontent.com'
+    # app.config['GOOGLE_CLIENT_SECRET'] = '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'
 
     app.config["MAIL_SERVER"] = "smtp.gmail.com"
     app.config["MAIL_PORT"] = 587
