@@ -160,60 +160,80 @@ def create_app():
     @app.route('/home', methods=['GET', 'POST'])
     def home():
         if 'username' in session:
-            username = session['username']
-            userrole = session['userRole']
-            userDetails = {
+            try:
+                username = session['username']
+                userrole = session['userRole']
+                userDetails = {
                     'Username': username,
                     'UserRole': userrole,
                 }
-            return render_template('home.html', userData=userDetails)
+                return render_template('home.html', userData=userDetails)
+            except KeyError as e:
+                app.logger.error('Session data KeyError in home route: %s', e)
+                return render_template('error.html', error_message='Session data error occurred')
+            except Exception as e:
+                app.logger.error('Error rendering home page: %s', e)
+                return render_template('error.html', error_message='Error rendering home page')
         else:
-            return render_template('login.html')
+            app.logger.info('User not logged in, redirecting to login page from home')
+            return redirect(url_for('login_app'))
     
     @app.route('/new_advertisement', methods=['GET', 'POST'])
     def new_advertisement():
-        if 'username' in session:
-            username = session['username']
-        
-            ad_id = request.args.get('adId')
+        if 'username' not in session:
+            # Redirect to login if username not found in session
+            app.logger.info('User not logged in, redirecting to login page')
+            return redirect(url_for('login_app'))
 
-            if ad_id != None:
-                data = query_db("SELECT  * FROM Advertisement WHERE addID=?",[ad_id],one=True)
-                Results = {
+        username = session['username']
+        ad_id = request.args.get('adId')
+
+        if ad_id:
+            try:
+                data = query_db("SELECT * FROM Advertisement WHERE addID=?", [ad_id], one=True)
+                if data:
+                    ad_data = {
                         'AdId': data['addID'],
-                        'UserName' : data['username'],
+                        'UserName': data['username'],
                         'AdTitle': data['addTitle'],
                         'AdPrice': data['addPrice'],
                         'AdContact': data['addContact'],
                         'AdEmail': data['addEmail'],
-                        'AdSpecification' : data['addSpecification'],
+                        'AdSpecification': data['addSpecification'],
                         'AdDescription': data['addInformation'],
                         'AdCategory': data['category'],
                     }
-                
-                return render_template('new_ad.html', adDataUpdate=Results)
-            else:
-                Results = {
-                        'AdId': 0,
-                        'Username': username,
-                    }
-                return render_template('new_ad.html', adDataUpdate=Results)
+                    app.logger.info('Ad data retrieved for ad_id %s', ad_id)
+                    return render_template('new_ad.html', adDataUpdate=ad_data)
+                else:
+                    app.logger.warning('No ad found with ad_id %s', ad_id)
+            except Exception as e:
+                app.logger.error('Error fetching ad data: %s', e)
+                return render_template('error.html', error_message='Error retrieving ad data')
         else:
-            # Redirect to login if username not found in session
-            return redirect(url_for('login_app'))
+            ad_data = {
+                'AdId': 0,
+                'UserName': username,
+            }
+            app.logger.info('Creating new ad for user %s', username)
+            return render_template('new_ad.html', adDataUpdate=ad_data)
 
         
     
     @app.route('/about_us', methods=['GET', 'POST'])
     def about_us():
         if 'username' in session:
-            username = session['username']
-            Results = {
-                'Username': username,
-            }
-            username = session['username']
-            return render_template('about_us.html',userData=Results)
+            try:
+                username = session['username']
+                Results = {
+                    'Username': username,
+                }
+                return render_template('about_us.html', userData=Results)
+            except Exception as e:
+                app.logger.error('Error rendering about us page: %s', e)
+                return render_template('error.html', error_message='Error rendering about us page')
         else:
+            app.logger.info('User not logged in, redirecting to login page from about_us')
             return redirect(url_for('login_app'))
         
     
