@@ -39,12 +39,12 @@
     </div>
     
 </main>
-
+<script src="{{ url_for('static', filename='home.js') }}"></script>
 <script type="text/javascript">
     var userData = {{ userData | tojson }};
     console.log(userData.Username)
 
 </script>
-<script src="{{ url_for('static', filename='home.js') }}"></script>
+
 
 {% endblock %}

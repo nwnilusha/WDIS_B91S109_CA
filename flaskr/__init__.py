@@ -306,32 +306,34 @@ def create_app():
     
 
     # Get all Ad list
-    @app.route('/get_ads/<string:ad_cat>')
-    def get_ads(ad_cat):
-        print('Inside get ads')
-        print(ad_cat)
-        ad_data = fetch_all_ads(ad_cat)
+    @app.route('/get_ads/<string:ad_category>')
+    def get_ads(ad_category):
+        app.logger.info('Fetching ads for category: %s', ad_category)
         
-        Results = []
-        for data in ad_data:
-            print(f"All add deta: {data}")
-            Result = {
-                'AdId': data['addID'],
-                'UserId' : data['userID'],
-                'UserName' : data['username'],
-                'AdTitle': data['addTitle'],
-                'AdDate' : data['addDate'],
-                'AdPrice': data['addPrice'],
-                'AdContact': data['addContact'],
-                'AdEmail': data['addEmail'],
-                'AdSpecification' : data['addSpecification'],
-                'AdDescription': data['addInformation'],
-                'AdCategory': data['category'],
-                'logedUserName': session['username'], 
-            }
-            Results.append(Result)
-        response = {'Results': Results, 'count': len(Results)}
-        return jsonify(response)  # Use jsonify to convert response to JSON
+        try:
+            ad_data = fetch_all_ads(ad_category)
+            
+            results = [{
+                'AdId': ad['addID'],
+                'UserId': ad['userID'],
+                'UserName': ad['username'],
+                'AdTitle': ad['addTitle'],
+                'AdDate': ad['addDate'],
+                'AdPrice': ad['addPrice'],
+                'AdContact': ad['addContact'],
+                'AdEmail': ad['addEmail'],
+                'AdSpecification': ad['addSpecification'],
+                'AdDescription': ad['addInformation'],
+                'AdCategory': ad['category'],
+                'logedUserName': session.get('username', '')
+            } for ad in ad_data]
+
+            response = {'Results': results, 'count': len(results)}
+            return jsonify(response)
+        
+        except Exception as e:
+            app.logger.error('Error fetching ads: %s', e)
+            return jsonify({'error': 'An error occurred while fetching ads'}), 500
     
      # Fetch all data from Advertisement tables.
     def fetch_all_ads(ad_cat):
