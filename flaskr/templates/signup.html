@@ -6,8 +6,6 @@
 
 {% block page_content_1 %}
 
-<script src="{{ url_for('static', filename='signup.js') }}"></script>
-
 <div id="confirmationModal" class="confirm_modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -60,7 +58,7 @@
         </section>
     </div>
 </main>
-
+<script src="{{ url_for('static', filename='signup.js') }}"></script>
 
 
 {% endblock %}

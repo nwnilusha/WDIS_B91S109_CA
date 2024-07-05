@@ -7,7 +7,7 @@
 {% block page_content_1 %}
 
 <link rel="stylesheet" href="static/about_us.css">
-<script src="{{ url_for('static', filename='about_us.js') }}"></script>
+
 
 <main class="about-container">
     <section class="about-section">
@@ -25,5 +25,5 @@
   console.log(userData.Username)
 
 </script>
-
+<script src="{{ url_for('static', filename='about_us.js') }}"></script>
 {% endblock %}

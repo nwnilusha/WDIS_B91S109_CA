@@ -65,8 +65,11 @@ function loadAdList(category) {
                     });
                 }
             });
-            
+             
         })
+        .catch(err => {
+            console.log(err);
+        });
 }
 
 function setUIDefault() {
@@ -84,16 +87,42 @@ function setUIDefault() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded and parsed');
 
-    document.getElementById('user_status_login').style.display = 'block';
-    document.getElementById('user_status_logout').style.display = 'none';
-    document.getElementById("usernale_label").textContent = '@'+userData.Username;
-    loadAdList('All')
-    // Event listener for the "Create New Ad" button
-    document.getElementById('newAdBtn').addEventListener('click', function(event) {
-        event.preventDefault();
-        console.log("Inside button click event handler")
-        window.location.href = "new_advertisement";
-    });
-})
+    // Check if elements exist before accessing their properties
+    var userStatusLogin = document.getElementById('user_status_login');
+    var userStatusLogout = document.getElementById('user_status_logout');
+    var usernameLabel = document.getElementById('usernale_label');
+    var newAdBtn = document.getElementById('newAdBtn');
+
+    if (userStatusLogin) {
+        userStatusLogin.style.display = 'block';
+    } else {
+        console.log('Element with ID user_status_login not found');
+    }
+
+    if (userStatusLogout) {
+        userStatusLogout.style.display = 'none';
+    } else {
+        console.log('Element with ID user_status_logout not found');
+    }
+
+    if (usernameLabel) {
+        usernameLabel.textContent = '@' + userData.Username;
+    } else {
+        console.log('Element with ID usernale_label not found');
+    }
+
+    if (newAdBtn) {
+        newAdBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log("Inside button click event handler");
+            window.location.href = "new_advertisement";
+        });
+    } else {
+        console.log('Element with ID newAdBtn not found');
+    }
+
+    loadAdList('All');
+});
 

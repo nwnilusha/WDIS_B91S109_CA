@@ -21,58 +21,61 @@ function displayImage(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded and parsed');
 
-    document.getElementById('user_status_login').style.display = 'none';
+    // Check if elements exist before accessing their properties
+    var userStatusLogin = document.getElementById('user_status_login');
+    var googleLoginBtn = document.getElementById('google_login');
+    var loginForm = document.getElementById('loginForm');
 
-    document.getElementById('google_login').addEventListener('click', function(event) {
-        event.preventDefault(); 
+    if (userStatusLogin) {
+        userStatusLogin.style.display = 'none';
+    } else {
+        console.log('Element with ID user_status_login not found');
+    }
 
-        window.location.href = `/google_login`;
-        // fetch(`/google_login`, {
-        //     method: 'GET',
-        //     })
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         if (data.user != "nil") {
-        //             console.log('Login success')
-        //             window.location.href = `/home`;
-        //         } else {
-        //             console.log('Login un-success')
-        //             showConfirmModal(data.message)
-        //         }
-        //     })
-        //     .catch(error => {
-        //         console.error('Error:', error);
-        // });
-    });
+    if (googleLoginBtn) {
+        googleLoginBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log('Google login button clicked');
+            window.location.href = `/google_login`;
+        });
+    } else {
+        console.log('Element with ID google_login not found');
+    }
 
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-        event.preventDefault(); 
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            console.log('Login form submitted');
 
-        var formData = new FormData(this);
+            var formData = new FormData(this);
 
-        fetch('/login_app', {
-            method: 'POST',
-            body: formData
+            fetch('/login_app', {
+                method: 'POST',
+                body: formData
             })
             .then(response => response.json())
             .then(data => {
                 if (data.user != "nil") {
-                    console.log('Login success')
+                    console.log('Login success');
                     window.location.href = `/home`;
                 } else {
-                    console.log('Login un-success')
-                    showConfirmModal(data.message)
+                    console.log('Login unsuccessful');
+                    showConfirmModal(data.message);
                 }
-                
             })
             .catch(error => {
                 console.error('Error:', error);
-                console.log('Login un-success');
-                showConfirmModal(error)
+                console.log('Login unsuccessful');
+                showConfirmModal(error);
+            });
         });
-    })
-})
+    } else {
+        console.log('Element with ID loginForm not found');
+    }
+});
+
 
 function updateLoginUI(user) {
 
