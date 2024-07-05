@@ -25,6 +25,7 @@ def generate_secret_key(length=32):
     return ''.join(secrets.choice(alphabet) for _ in range(length))
 
 
+
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = generate_secret_key()
@@ -61,6 +62,8 @@ def create_app():
     )
 
     bcrypt = Bcrypt(app)
+
+    user_logged = ''
 
     @app.route('/', methods=['GET', 'POST'])
     def appInit():
@@ -106,7 +109,8 @@ def create_app():
                 hashed_password = user['password']
 
                 if check_password_hash(hashed_password, password):
-                    session['username'] = user['username']
+                    user_logged = username
+                    session['username'] = username
                     session['userRole'] = user['userRole']
                     session['userID'] = user['userID']
 
