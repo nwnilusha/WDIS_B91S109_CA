@@ -24,6 +24,7 @@ function loadAdList(category) {
         document.getElementById('other_ads').style.color = 'green';
         document.getElementById('other_ads').style.textDecoration = 'underline';
     }
+
     fetch(`/get_ads/${category}`)
     .then(response => {
         if (!response.ok) {
@@ -39,9 +40,12 @@ function loadAdList(category) {
                 console.log('Ad:', x);
                 var clickableItem = '';
                 if (userData.UserRole === 'Admin' || x['UserName'] === x['logedUserName']) {
-                    clickableItem = `<span class="clickable-item" onclick="" style="position: absolute; top: 10px; right: 10px; cursor: pointer;">&#9193;</span>`;
+                    clickableItem = `<span class="clickable-item" data-ad-id="${x['AdId']}" style="position: absolute; top: 10px; right: 10px; cursor: pointer;">&#9193;</span>`;
                 }
-                var ad_element = `<div class="ad" id=${x['AdId']} style="position: relative;">
+                
+                var ad_element = `<form class="all_ads" id="allAdForm${x['AdId']}" action="/edit_advertisement" method="post">
+                                    <input type="hidden" name="adId" id="adId" value="${x['AdId']}">
+                                    <div class="ad" id="ad${x['AdId']}" style="position: relative;">
                                     ${clickableItem}
                                     <h2 class="adTitle">${x['AdCategory']} - ${x['AdTitle']}</h2>
                                     <div style="display: flex; justify-content: space-between;">
@@ -52,18 +56,18 @@ function loadAdList(category) {
                                     <h3 class="adEmail"><span style="color:black;font-weight:bold">Email: </span> <span>&#128236;</span> <span style="color:blue;font-weight:normal">${x['AdEmail']}</span></h3>
                                     <h3><span style="color:black;font-weight:bold">Specification: </span><span style="color:black;font-weight:normal">${x['AdSpecification']}</span></h3>
                                     <h3><span style="color:black;font-weight:bold">Description: </span><span style="color:black;font-weight:normal">${x['AdDescription']}</span></h3>
-                                </div>`;
+                                    </div>
+                                </form>`;
                 document.querySelector('.ad-section .ad_container .ad_list').innerHTML += ad_element;
             });
 
-            data.Results.forEach(x => {
-                if (userData.UserRole === 'Admin' || x['UserName'] === x['logedUserName']) {
-                    document.getElementById(x['AdId']).addEventListener('click', function() {
-                        console.log('Click ad:', x['AdId']);
-                        const adId = x['AdId'];
-                        window.location.href = `/new_advertisement?adId=${adId}`;
-                    });
-                }
+            // Attach event listeners to clickable items
+            document.querySelectorAll('.clickable-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const adId = this.getAttribute('data-ad-id');
+                    const form = document.getElementById(`allAdForm${adId}`);
+                    form.submit();
+                });
             });
         } else {
             console.log('No results found.');
@@ -72,6 +76,7 @@ function loadAdList(category) {
     .catch(error => {
         console.error('Fetch error:', error);
     });
+
 
 }
 

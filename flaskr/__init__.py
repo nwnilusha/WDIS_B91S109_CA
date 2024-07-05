@@ -178,23 +178,28 @@ def create_app():
             app.logger.info('User not logged in, redirecting to login page from home')
             return redirect(url_for('login_app'))
     
-    @app.route('/new_advertisement', methods=['GET', 'POST'])
-    def new_advertisement():
-        if 'username' not in session:
-            # Redirect to login if username not found in session
-            app.logger.info('User not logged in, redirecting to login page')
-            return redirect(url_for('login_app'))
+    @app.route('/edit_advertisement', methods=['GET', 'POST'])
+    def edit_advertisement():
+        if request.method == 'POST': 
+            if 'username' not in session:
+                # Redirect to login if username not found in session
+                app.logger.info('User not logged in, redirecting to login page')
+                return redirect(url_for('login_app'))
 
-        username = session['username']
-        ad_id = request.args.get('adId')
+            addId = request.form['adId']
+            username = session['username']
+            print(f"Test---->{addId}")
+            print(f"Username---->{username}")
 
-        if ad_id:
+            app.logger.info('User %s is editing ad with id %s', username, addId)
+            
             try:
-                data = query_db("SELECT * FROM Advertisement WHERE addID=?", [ad_id], one=True)
+                data = query_db("SELECT * FROM Advertisement WHERE addID=?", [addId], one=True)
+                print(f"Data----->{data}")
                 if data:
                     ad_data = {
                         'AdId': data['addID'],
-                        'UserName': data['username'],
+                        'UserName':username,
                         'AdTitle': data['addTitle'],
                         'AdPrice': data['addPrice'],
                         'AdContact': data['addContact'],
@@ -202,23 +207,28 @@ def create_app():
                         'AdSpecification': data['addSpecification'],
                         'AdDescription': data['addInformation'],
                         'AdCategory': data['category'],
+                        
                     }
-                    app.logger.info('Ad data retrieved for ad_id %s', ad_id)
+                    app.logger.info('Ad data retrieved for ad_id %s', addId)
                     return render_template('new_ad.html', adDataUpdate=ad_data)
                 else:
-                    app.logger.warning('No ad found with ad_id %s', ad_id)
+                    app.logger.warning('No ad found with ad_id %s', addId)
+                    return render_template('error.html', error_message='No ad found with the provided ID')
             except Exception as e:
                 app.logger.error('Error fetching ad data: %s', e)
                 return render_template('error.html', error_message='Error retrieving ad data')
-        else:
-            ad_data = {
-                'AdId': 0,
-                'UserName': username,
-            }
-            app.logger.info('Creating new ad for user %s', username)
-            return render_template('new_ad.html', adDataUpdate=ad_data)
 
-        
+
+    @app.route('/new_advertisement', methods=['GET', 'POST'])
+    def new_advertisement():  
+        username = session['username']
+        print(f"New add user -----> {username}")
+        ad_data = {
+            'AdId': 0,
+            'UserName': username,
+        }
+        app.logger.info('Creating new ad for user %s', username)
+        return render_template('new_ad.html', adDataUpdate=ad_data)
     
     @app.route('/about_us', methods=['GET', 'POST'])
     def about_us():

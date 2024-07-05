@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.getElementById('user_status_login').style.display = 'block';
     document.getElementById('user_status_logout').style.display = 'none';
-    document.getElementById("usernale_label").textContent = '@'+adData.Username;
+    document.getElementById("usernale_label").textContent = '@' + adData.UserName;
+    console.log(adData.Username)
 
     if (adData.AdId != 0) {
         document.getElementById('ad-title').value = adData.AdTitle;
