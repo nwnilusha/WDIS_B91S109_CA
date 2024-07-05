@@ -29,15 +29,11 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = generate_secret_key()
 
-    # Initialize CSRF protection
-    # csrf = CSRFProtect(app)
-
     app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
 
-    # CORS(app)
     # Google OAuth configuration
     app.config['GOOGLE_CLIENT_ID'] = '947090452022-15fi7jfug3e7v31do1ps1e7idmrm6v9n.apps.googleusercontent.com'
     app.config['GOOGLE_CLIENT_SECRET'] = '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'
@@ -61,6 +57,7 @@ def create_app():
         userinfo_endpoint='https://www.googleapis.com/oauth2/v3/userinfo',
         jwks_uri='https://www.googleapis.com/oauth2/v3/certs',
         client_kwargs={'scope': 'openid profile email'},
+        redirect_uri='https://advertisementhub-fa406cdf9ed7.herokuapp.com/authorize',
     )
 
     bcrypt = Bcrypt(app)
@@ -137,8 +134,6 @@ def create_app():
             # Extract the email or preferred username from the user info
             email = user_info.get('email')
             username = email.split('@')[0] if email else 'unknown'
-            print(email)
-            print(username)
             
             # Store the username and user role in the session
             session['username'] = username
@@ -475,4 +470,5 @@ def create_app():
 
     return app
 
-app = create_app()
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port='8080') 
