@@ -38,6 +38,7 @@ def create_app():
     # Google OAuth configuration
     app.config['GOOGLE_CLIENT_ID'] = '947090452022-15fi7jfug3e7v31do1ps1e7idmrm6v9n.apps.googleusercontent.com'
     app.config['GOOGLE_CLIENT_SECRET'] = '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'
+    app.config['GOOGLE_DISCOVERY_URL'] = "https://accounts.google.com/.well-known/openid-configuration"
 
     app.config["MAIL_SERVER"] = "smtp.gmail.com"
     app.config["MAIL_PORT"] = 587
@@ -221,7 +222,7 @@ def create_app():
 
     @app.route('/new_advertisement', methods=['GET', 'POST'])
     def new_advertisement():  
-        if 'username' not in session:
+        if 'username' in session:
             username = session['username']
             print(f"New add user -----> {username}")
             ad_data = {
@@ -231,7 +232,7 @@ def create_app():
             app.logger.info('Creating new ad for user %s', username)
             return render_template('new_ad.html', adDataUpdate=ad_data)
         else:
-            return render_template('signup.html')
+            return render_template('login.html')
     
     @app.route('/about_us', methods=['GET', 'POST'])
     def about_us():
@@ -254,11 +255,13 @@ def create_app():
     def contact_us():
         if 'username' in session:
             username = session['username']
-            Results = {
+            userrole = session['userRole']
+            userDetails = {
                 'Username': username,
+                'UserRole': userrole,
             }
             username = session['username']
-            return render_template('contact_us.html',userData=Results)
+            return render_template('contact_us.html',userData=userDetails)
         else:
             return redirect(url_for('login_app'))
         
