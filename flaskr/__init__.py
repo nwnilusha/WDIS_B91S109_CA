@@ -25,6 +25,7 @@ def generate_secret_key(length=32):
     return ''.join(secrets.choice(alphabet) for _ in range(length))
 
 
+
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = generate_secret_key()
@@ -61,6 +62,8 @@ def create_app():
     )
 
     bcrypt = Bcrypt(app)
+
+    user_logged = ''
 
     @app.route('/', methods=['GET', 'POST'])
     def appInit():
@@ -147,6 +150,7 @@ def create_app():
     @app.route('/logout')
     def logout():
         session.clear()
+        user_logged = ''
         return render_template('login.html')
     
     @app.route('/signup', methods=['GET', 'POST'])
@@ -155,6 +159,7 @@ def create_app():
     
     @app.route('/home', methods=['GET', 'POST'])
     def home():
+        if 'username' in session or user_logged != '':
             try:
                 username = session['username']
                 userrole = session['userRole']
@@ -169,7 +174,9 @@ def create_app():
             except Exception as e:
                 app.logger.error('Error rendering home page: %s', e)
                 return render_template('error.html', error_message='Error rendering home page')
-
+        else:
+            app.logger.info('User not logged in, redirecting to login page from home')
+            return redirect(url_for('login_app'))
     
     @app.route('/edit_advertisement', methods=['GET', 'POST'])
     def edit_advertisement():
@@ -214,6 +221,7 @@ def create_app():
 
     @app.route('/new_advertisement', methods=['GET', 'POST'])
     def new_advertisement():  
+        if 'username' in session or user_logged != '':
             username = session['username']
             print(f"New add user -----> {username}")
             ad_data = {
@@ -222,9 +230,12 @@ def create_app():
             }
             app.logger.info('Creating new ad for user %s', username)
             return render_template('new_ad.html', adDataUpdate=ad_data)
+        else:
+            return redirect(url_for('login_app'))
     
     @app.route('/about_us', methods=['GET', 'POST'])
     def about_us():
+        if 'username' in session or user_logged != '':
             try:
                 username = session['username']
                 Results = {
@@ -234,16 +245,22 @@ def create_app():
             except Exception as e:
                 app.logger.error('Error rendering about us page: %s', e)
                 return render_template('error.html', error_message='Error rendering about us page')
+        else:
+            app.logger.info('User not logged in, redirecting to login page from about_us')
+            return redirect(url_for('login_app'))
         
     
     @app.route('/contact_us', methods=['GET', 'POST'])
     def contact_us():
+        if 'username' in session or user_logged != '':
             username = session['username']
             Results = {
                 'Username': username,
             }
             username = session['username']
             return render_template('contact_us.html',userData=Results)
+        else:
+            return redirect(url_for('login_app'))
         
     @app.route('/send_message', methods=['POST'])
     def send_message():
@@ -288,6 +305,7 @@ def create_app():
     
     @app.route('/manage_users', methods=['GET', 'POST'])
     def manageUsers():
+        if 'username' in session or user_logged != '':
             username = request.form['create_username']
             password = request.form['create_password']
             email = request.form['create_email']
@@ -316,6 +334,8 @@ def create_app():
                 # db.rollback()
                 error_msg = f'Error inserting user: {e}'
                 return jsonify({"message": error_msg, "status":False}), 500
+        else:
+            return render_template('signup.html')
     
 
     # Get all Ad list
