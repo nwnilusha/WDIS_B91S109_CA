@@ -159,7 +159,7 @@ def create_app():
     
     @app.route('/home', methods=['GET', 'POST'])
     def home():
-        if 'username' in session or user_logged != '':
+        if 'username' in session:
             try:
                 username = session['username']
                 userrole = session['userRole']
@@ -221,7 +221,7 @@ def create_app():
 
     @app.route('/new_advertisement', methods=['GET', 'POST'])
     def new_advertisement():  
-        if 'username' in session or user_logged != '':
+        if 'username' not in session:
             username = session['username']
             print(f"New add user -----> {username}")
             ad_data = {
@@ -231,11 +231,11 @@ def create_app():
             app.logger.info('Creating new ad for user %s', username)
             return render_template('new_ad.html', adDataUpdate=ad_data)
         else:
-            return redirect(url_for('login_app'))
+            return render_template('signup.html')
     
     @app.route('/about_us', methods=['GET', 'POST'])
     def about_us():
-        if 'username' in session or user_logged != '':
+        if 'username' in session:
             try:
                 username = session['username']
                 Results = {
@@ -252,7 +252,7 @@ def create_app():
     
     @app.route('/contact_us', methods=['GET', 'POST'])
     def contact_us():
-        if 'username' in session or user_logged != '':
+        if 'username' in session:
             username = session['username']
             Results = {
                 'Username': username,
@@ -305,7 +305,7 @@ def create_app():
     
     @app.route('/manage_users', methods=['GET', 'POST'])
     def manageUsers():
-        if 'username' in session or user_logged != '':
+        if 'username' in session:
             username = request.form['create_username']
             password = request.form['create_password']
             email = request.form['create_email']
