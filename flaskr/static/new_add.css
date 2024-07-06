@@ -144,6 +144,10 @@ button {
     cursor: pointer;
 }
 
+input[type="text"]:focus {
+    outline: 2px solid #007bff; /* Change this color to your preference */
+}
+
 button:hover {
     background-color: #555;
 }

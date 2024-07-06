@@ -24,7 +24,7 @@ def generate_secret_key(length=32):
     alphabet = string.ascii_letters + string.digits + '!@#$%^&*()-=_+'
     return ''.join(secrets.choice(alphabet) for _ in range(length))
 
-
+user_logged = ''
 
 def create_app():
     app = Flask(__name__)
@@ -62,8 +62,6 @@ def create_app():
     )
 
     bcrypt = Bcrypt(app)
-
-    user_logged = ''
 
     @app.route('/', methods=['GET', 'POST'])
     def appInit():
@@ -159,7 +157,7 @@ def create_app():
     
     @app.route('/home', methods=['GET', 'POST'])
     def home():
-        if 'username' in session:
+        if 'username' in session or user_logged != '':
             try:
                 username = session['username']
                 userrole = session['userRole']
@@ -221,18 +219,21 @@ def create_app():
 
     @app.route('/new_advertisement', methods=['GET', 'POST'])
     def new_advertisement():  
-        username = session['username']
-        print(f"New add user -----> {username}")
-        ad_data = {
-            'AdId': 0,
-            'UserName': username,
-        }
-        app.logger.info('Creating new ad for user %s', username)
-        return render_template('new_ad.html', adDataUpdate=ad_data)
+        if 'username' in session or user_logged != '':
+            username = session['username']
+            print(f"New add user -----> {username}")
+            ad_data = {
+                'AdId': 0,
+                'UserName': username,
+            }
+            app.logger.info('Creating new ad for user %s', username)
+            return render_template('new_ad.html', adDataUpdate=ad_data)
+        else:
+            return redirect(url_for('login_app'))
     
     @app.route('/about_us', methods=['GET', 'POST'])
     def about_us():
-        if 'username' in session:
+        if 'username' in session or user_logged != '':
             try:
                 username = session['username']
                 Results = {
@@ -249,7 +250,7 @@ def create_app():
     
     @app.route('/contact_us', methods=['GET', 'POST'])
     def contact_us():
-        if 'username' in session:
+        if 'username' in session or user_logged != '':
             username = session['username']
             Results = {
                 'Username': username,
@@ -302,7 +303,7 @@ def create_app():
     
     @app.route('/manage_users', methods=['GET', 'POST'])
     def manageUsers():
-        if 'username' in session:
+        if 'username' in session or user_logged != '':
             username = request.form['create_username']
             password = request.form['create_password']
             email = request.form['create_email']
