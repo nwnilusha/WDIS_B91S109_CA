@@ -28,7 +28,7 @@ def generate_secret_key(length=32):
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = generate_secret_key()
+    app.config['SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
 
     app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
@@ -151,7 +151,6 @@ def create_app():
     @app.route('/logout')
     def logout():
         session.clear()
-        user_logged = ''
         return render_template('login.html')
     
     @app.route('/signup', methods=['GET', 'POST'])
@@ -160,7 +159,7 @@ def create_app():
     
     @app.route('/home', methods=['GET', 'POST'])
     def home():
-        if 'username' in session:
+        if session['username']:
             try:
                 username = session['username']
                 userrole = session['userRole']
@@ -222,7 +221,7 @@ def create_app():
 
     @app.route('/new_advertisement', methods=['GET', 'POST'])
     def new_advertisement():  
-        if 'username' in session:
+        if session['username']:
             username = session['username']
             print(f"New add user -----> {username}")
             ad_data = {
@@ -236,7 +235,7 @@ def create_app():
     
     @app.route('/about_us', methods=['GET', 'POST'])
     def about_us():
-        if 'username' in session:
+        if session['username']:
             try:
                 username = session['username']
                 Results = {
@@ -253,7 +252,7 @@ def create_app():
     
     @app.route('/contact_us', methods=['GET', 'POST'])
     def contact_us():
-        if 'username' in session:
+        if session['username']:
             username = session['username']
             userrole = session['userRole']
             userDetails = {
@@ -308,7 +307,7 @@ def create_app():
     
     @app.route('/manage_users', methods=['GET', 'POST'])
     def manageUsers():
-        if 'username' in session:
+        if session['username']:
             username = request.form['create_username']
             password = request.form['create_password']
             email = request.form['create_email']
