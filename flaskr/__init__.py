@@ -36,9 +36,9 @@ def create_app():
         os.makedirs(app.config['UPLOAD_FOLDER'])
 
     # Google OAuth configuration
-    # app.config['GOOGLE_CLIENT_ID'] = '947090452022-15fi7jfug3e7v31do1ps1e7idmrm6v9n.apps.googleusercontent.com'
-    # app.config['GOOGLE_CLIENT_SECRET'] = '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'
-    # app.config['GOOGLE_DISCOVERY_URL'] = "https://accounts.google.com/.well-known/openid-configuration"
+    app.config['GOOGLE_CLIENT_ID'] = "431195197375-5moggpoor3nl6ej4g8rmsvvuedhci4l5.apps.googleusercontent.com"
+    app.config['GOOGLE_CLIENT_SECRET'] = "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"
+    app.config['GOOGLE_DISCOVERY_URL'] = "https://accounts.google.com/.well-known/openid-configuration"
 
     app.config["MAIL_SERVER"] = "smtp.gmail.com"
     app.config["MAIL_PORT"] = 587
@@ -50,19 +50,21 @@ def create_app():
     mail = Mail(app)
 
     oauth = OAuth(app)
-    # oauth.register(
-    #     name='google',
-    #     client_id=app.config['GOOGLE_CLIENT_ID'],
-    #     client_secret=app.config['GOOGLE_CLIENT_SECRET'],
-    #     authorize_url='https://accounts.google.com/o/oauth2/auth',
-    #     access_token_url='https://oauth2.googleapis.com/token',
-    #     userinfo_endpoint='https://www.googleapis.com/oauth2/v3/userinfo',
-    #     jwks_uri='https://www.googleapis.com/oauth2/v3/certs',
-    #     client_kwargs={'scope': 'openid profile email'},
-    #     # redirect_uri='https://advertisementhub-fa406cdf9ed7.herokuapp.com/authorize',
-    # )
+    oauth.register(
+        name='google',
+        client_id=app.config['GOOGLE_CLIENT_ID'],
+        client_secret=app.config['GOOGLE_CLIENT_SECRET'],
+        authorize_url='https://accounts.google.com/o/oauth2/auth',
+        access_token_url='https://oauth2.googleapis.com/token',
+        userinfo_endpoint='https://www.googleapis.com/oauth2/v3/userinfo',
+        jwks_uri='https://www.googleapis.com/oauth2/v3/certs',
+        client_kwargs={'scope': 'openid profile email'},
+        # redirect_uri='https://advertisementhub-fa406cdf9ed7.herokuapp.com/authorize',
+    )
 
     bcrypt = Bcrypt(app)
+
+    user_logged = ''
 
     @app.route('/', methods=['GET', 'POST'])
     def appInit():
@@ -124,33 +126,15 @@ def create_app():
     
     @app.route('/google_login')
     def google_login():
-        # redirect_uri = url_for('authorize', _external=True)
-        # google = oauth.create_client('google')
-        # return google.authorize_redirect(redirect_uri)
-        GOOGLE_CLIENT_ID = os.environ.get('431195197375-5moggpoor3nl6ej4g8rmsvvuedhci4l5.apps.googleusercontent.com')
-        GOOGLE_CLIENT_SECRET = os.environ.get('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')
-        
-        CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
-        oauth.register(
-            name='google',
-            client_id=GOOGLE_CLIENT_ID,
-            client_secret=GOOGLE_CLIENT_SECRET,
-            server_metadata_url=CONF_URL,
-            client_kwargs={
-                'scope': 'openid email profile'
-            }
-        )
-     
-        # Redirect to google_auth function
         redirect_uri = url_for('authorize', _external=True)
-        return oauth.google.authorize_redirect(redirect_uri)
+        google = oauth.create_client('google')
+        return google.authorize_redirect(redirect_uri)
 
 
     @app.route('/authorize')
     def authorize():
         token = oauth.google.authorize_access_token()
-        user_info = oauth.google.parse_id_token(token)
-        # user_info = token['userinfo']
+        user_info = token['userinfo']
         if user_info:
             # Extract the email or preferred username from the user info
             email = user_info.get('email')
@@ -163,7 +147,6 @@ def create_app():
             # return jsonify({"user": username, "message": "Success"}), 200
         else:
             return render_template('login.html')
-
     
     @app.route('/logout')
     def logout():
