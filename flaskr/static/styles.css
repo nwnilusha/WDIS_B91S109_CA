@@ -194,7 +194,7 @@ main .signup_container {
     box-sizing: border-box;
 }
 
-.login_btn {
+/* .login_btn {
     width: 50%;
     padding: 0.8em;
     border: none;
@@ -215,8 +215,26 @@ main .signup_container {
 }
 .google-login {
     background-color: #3b5998;
+} */
+
+.google-login {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background-color: #3b5998;
 }
 
+.google-logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+}
+
+.social-login {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
 
 .input-container {
     position: relative;

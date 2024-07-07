@@ -37,8 +37,10 @@
         </div>
         <button type="submit">Login</button>
         <div class="social-login">
-          <!-- <button type="button" class="google-login" id="google_login">Sign up</button> -->
-          <button type="button" class="google-login" id="google_login">Google Login</button>
+          <button type="button" class="google-login" id="google_login">
+            <img src="{{ url_for('static', filename='google_login.png') }}" alt="Google Logo" class="google-logo">
+            Google Login
+          </button>
         </div>
         <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
       </form>
