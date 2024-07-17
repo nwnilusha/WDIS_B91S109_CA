@@ -307,7 +307,6 @@ def create_app():
     
     @app.route('/manage_users', methods=['GET', 'POST'])
     def manageUsers():
-        if session['username']:
             username = request.form['create_username']
             password = request.form['create_password']
             email = request.form['create_email']
@@ -336,8 +335,6 @@ def create_app():
                 # db.rollback()
                 error_msg = f'Error inserting user: {e}'
                 return jsonify({"message": error_msg, "status":False}), 500
-        else:
-            return render_template('signup.html')
     
 
     # Get all Ad list
